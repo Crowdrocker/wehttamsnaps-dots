@@ -1,0 +1,105 @@
+# WehttamSnaps Package List
+# Install all: yay -S --needed - < packages/package.list.txt
+
+# Wayland / SwayFX
+swayfx
+niri
+swaylock-effects
+swayidle
+wl-clipboard
+cliphist
+grimblast-git
+slurp
+grim
+xdg-desktop-portal-wlr
+xdg-desktop-portal
+polkit-gnome
+xwayland
+
+# Shell & Terminal
+noctalia-shell
+ghostty
+rofi-wayland
+dunst
+libnotify
+
+# Fonts
+ttf-jetbrains-mono-nerd
+ttf-orbitron
+ttf-rajdhani
+noto-fonts
+noto-fonts-emoji
+
+# Audio
+pipewire
+pipewire-pulse
+pipewire-alsa
+pipewire-jack
+wireplumber
+pavucontrol
+playerctl
+mpv
+ffmpeg
+qpwgraph
+helvum
+brightnessctl
+
+# File Managers
+thunar
+dolphin
+
+# Browsers
+brave-bin
+
+# Editors
+kate
+
+# Streaming
+obs-studio
+
+# Photography
+darktable
+digikam
+gimp
+krita
+rawtherapee
+inkscape
+
+# Gaming
+steam
+lib32-mesa
+lib32-vulkan-radeon
+vulkan-radeon
+mesa
+proton-ge-custom
+lutris
+gamemode
+lib32-gamemode
+gamescope
+mangohud
+lib32-mangohud
+vkbasalt
+protonup-qt
+
+# Modding (Wine / MO2)
+wine-staging
+winetricks
+protontricks
+
+# Theming
+papirus-icon-theme
+bibata-cursor-theme-bin
+tokyonight-gtk-theme-git
+kvantum
+
+# System
+lm_sensors
+htop
+btop
+fastfetch
+starship
+zsh
+zram-generator
+python-gobject
+zenity
+yad

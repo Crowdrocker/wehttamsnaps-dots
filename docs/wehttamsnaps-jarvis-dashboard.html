@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>J.A.R.V.I.S. — WehttamSnaps Command Interface</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cyan: #00ffd1;
+    --blue: #3b82ff;
+    --pink: #ff5af1;
+    --dark: #0a0014;
+    --darker: #050008;
+    --mid: #110022;
+    --border: rgba(0,255,209,0.25);
+    --glow-cyan: 0 0 10px #00ffd1, 0 0 30px rgba(0,255,209,0.3);
+    --glow-blue: 0 0 10px #3b82ff, 0 0 30px rgba(59,130,255,0.3);
+    --glow-pink: 0 0 10px #ff5af1, 0 0 20px rgba(255,90,241,0.3);
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-hud: 'Orbitron', monospace;
+    --font-body: 'Rajdhani', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--darker);
+    color: #cce8e4;
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* Grid bg */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,209,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,209,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== TOP BAR ===== */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(5,0,8,0.95);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 56px;
+    backdrop-filter: blur(12px);
+  }
+
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .topbar-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+  }
+
+  .topbar-title {
+    font-family: var(--font-hud);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--cyan);
+    text-shadow: var(--glow-cyan);
+  }
+
+  .topbar-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: rgba(0,255,209,0.5);
+    letter-spacing: 0.1em;
+  }
+
+  .topbar-nav {
+    display: flex;
+    gap: 2px;
+  }
+
+  .nav-btn {
+    font-family: var(--font-hud);
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: rgba(204,232,228,0.5);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .nav-btn:hover, .nav-btn.active {
+    color: var(--cyan);
+    border-color: var(--border);
+    text-shadow: var(--glow-cyan);
+    background: rgba(0,255,209,0.05);
+  }
+
+  .status-dot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--cyan);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: var(--glow-cyan);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ===== MAIN LAYOUT ===== */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    text-align: center;
+    padding: 3rem 0 2rem;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: rgba(0,255,209,0.6);
+    margin-bottom: 1rem;
+    animation: fadeIn 0.8s ease;
+  }
+
+  .hero-title {
+    font-family: var(--font-hud);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    animation: fadeIn 1s ease 0.2s both;
+  }
+
+  .hero-title .j { color: var(--cyan); text-shadow: var(--glow-cyan); }
+  .hero-title .a { color: var(--blue); text-shadow: var(--glow-blue); }
+  .hero-title .r { color: var(--pink); text-shadow: var(--glow-pink); }
+  .hero-title .v { color: var(--cyan); text-shadow: var(--glow-cyan); }
+  .hero-title .i2 { color: var(--blue); text-shadow: var(--glow-blue); }
+  .hero-title .s { color: var(--pink); text-shadow: var(--glow-pink); }
+
+  .hero-sub {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: rgba(204,232,228,0.5);
+    margin-bottom: 2rem;
+    animation: fadeIn 1s ease 0.4s both;
+  }
+
+  .hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: rgba(204,232,228,0.4);
+    animation: fadeIn 1s ease 0.6s both;
+  }
+
+  .hero-meta span { color: var(--cyan); }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== TABS ===== */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tab {
+    font-family: var(--font-hud);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: rgba(204,232,228,0.4);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  .tab:hover { color: var(--cyan); }
+  .tab.active {
+    color: var(--cyan);
+    border-bottom-color: var(--cyan);
+    text-shadow: var(--glow-cyan);
+  }
+
+  .tab-content { display: none; animation: fadeIn 0.4s ease; }
+  .tab-content.active { display: block; }
+
+  /* ===== SECTION HEADER ===== */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-tag {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: rgba(0,255,209,0.5);
+    text-transform: uppercase;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* ===== GRID LAYOUTS ===== */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+
+  @media (max-width: 900px) {
+    .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: rgba(17,0,34,0.8);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    position: relative;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--cyan);
+    box-shadow: var(--glow-cyan);
+  }
+
+  .card:hover {
+    border-color: rgba(0,255,209,0.5);
+    box-shadow: 0 0 20px rgba(0,255,209,0.08);
+  }
+
+  .card.blue::before { background: var(--blue); box-shadow: var(--glow-blue); }
+  .card.pink::before { background: var(--pink); box-shadow: var(--glow-pink); }
+
+  .card-title {
+    font-family: var(--font-hud);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--cyan);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  .card.blue .card-title { color: var(--blue); }
+  .card.pink .card-title { color: var(--pink); }
+
+  /* ===== KEYBIND TABLE ===== */
+  .keybind-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .keybind-table tr {
+    border-bottom: 1px solid rgba(0,255,209,0.06);
+    transition: background 0.15s;
+  }
+
+  .keybind-table tr:hover {
+    background: rgba(0,255,209,0.04);
+  }
+
+  .keybind-table td {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+    vertical-align: middle;
+  }
+
+  .keybind-table .key-col {
+    width: 220px;
+    white-space: nowrap;
+  }
+
+  .key {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 2px 7px;
+    background: rgba(0,255,209,0.08);
+    border: 1px solid rgba(0,255,209,0.3);
+    color: var(--cyan);
+    letter-spacing: 0.05em;
+    margin-right: 2px;
+    white-space: nowrap;
+  }
+
+  .desc-col {
+    color: rgba(204,232,228,0.85);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .note-col {
+    color: rgba(204,232,228,0.35);
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    text-align: right;
+  }
+
+  .section-divider {
+    padding: 10px 8px 4px;
+    font-family: var(--font-hud);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--cyan);
+    opacity: 0.7;
+    text-transform: uppercase;
+  }
+
+  .keybind-search {
+    width: 100%;
+    background: rgba(0,255,209,0.05);
+    border: 1px solid var(--border);
+    color: var(--cyan);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    padding: 10px 14px;
+    outline: none;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .keybind-search::placeholder { color: rgba(0,255,209,0.3); }
+  .keybind-search:focus { border-color: rgba(0,255,209,0.6); box-shadow: var(--glow-cyan); }
+
+  /* ===== SOUND SYSTEM ===== */
+  .sound-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .sound-card {
+    background: rgba(17,0,34,0.8);
+    border: 1px solid rgba(59,130,255,0.2);
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sound-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--blue);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+  }
+
+  .sound-card:hover {
+    border-color: rgba(59,130,255,0.5);
+    box-shadow: 0 0 15px rgba(59,130,255,0.1);
+  }
+
+  .sound-card:hover::after { transform: scaleX(1); }
+
+  .sound-card.idroid {
+    border-color: rgba(255,90,241,0.2);
+  }
+
+  .sound-card.idroid::after { background: var(--pink); }
+  .sound-card.idroid:hover { border-color: rgba(255,90,241,0.5); box-shadow: 0 0 15px rgba(255,90,241,0.1); }
+
+  .sound-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--blue);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .sound-card.idroid .sound-label { color: var(--pink); }
+
+  .sound-desc {
+    font-size: 0.8rem;
+    color: rgba(204,232,228,0.7);
+    font-style: italic;
+  }
+
+  .sound-icon {
+    font-size: 1.2rem;
+    margin-bottom: 6px;
+  }
+
+  /* ===== SYSTEM SPECS ===== */
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,255,209,0.06);
+    font-size: 0.88rem;
+  }
+
+  .spec-label {
+    color: rgba(204,232,228,0.5);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+
+  .spec-value {
+    color: var(--cyan);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-align: right;
+  }
+
+  /* ===== REPO STRUCTURE ===== */
+  .tree {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.9;
+    color: rgba(204,232,228,0.7);
+  }
+
+  .tree .dir { color: var(--cyan); }
+  .tree .file { color: rgba(204,232,228,0.55); }
+  .tree .comment { color: rgba(0,255,209,0.35); font-style: italic; }
+  .tree .exec { color: var(--pink); }
+
+  /* ===== INSTALL BLOCK ===== */
+  .code-block {
+    background: rgba(0,0,0,0.6);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--cyan);
+    padding: 1.2rem 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.8;
+    color: rgba(204,232,228,0.8);
+    overflow-x: auto;
+    position: relative;
+    margin-bottom: 1rem;
+  }
+
+  .code-block .comment { color: rgba(0,255,209,0.4); }
+  .code-block .cmd { color: var(--cyan); }
+  .code-block .arg { color: var(--blue); }
+  .code-block .str { color: var(--pink); }
+
+  .copy-btn {
+    position: absolute;
+    top: 8px; right: 8px;
+    font-family: var(--font-hud);
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    background: rgba(0,255,209,0.1);
+    border: 1px solid var(--border);
+    color: var(--cyan);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .copy-btn:hover { background: rgba(0,255,209,0.2); }
+
+  /* ===== WORKSPACE BADGES ===== */
+  .ws-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .ws-badge {
+    background: rgba(17,0,34,0.8);
+    border: 1px solid var(--border);
+    padding: 10px 8px;
+    text-align: center;
+    font-family: var(--font-hud);
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: default;
+    transition: all 0.2s;
+  }
+
+  .ws-badge:hover {
+    border-color: var(--cyan);
+    background: rgba(0,255,209,0.06);
+  }
+
+  .ws-num {
+    font-size: 1.2rem;
+    font-weight: 900;
+    display: block;
+    margin-bottom: 3px;
+    background: linear-gradient(135deg, var(--cyan), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .ws-name { color: rgba(204,232,228,0.5); }
+
+  /* ===== STATUS INDICATORS ===== */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    padding: 3px 10px;
+    border: 1px solid;
+    letter-spacing: 0.08em;
+  }
+
+  .status-badge.ok { border-color: var(--cyan); color: var(--cyan); }
+  .status-badge.warn { border-color: #ffcc00; color: #ffcc00; }
+  .status-badge.gaming { border-color: var(--pink); color: var(--pink); }
+
+  /* ===== BRAND FOOTER ===== */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: rgba(204,232,228,0.25);
+    margin-top: 3rem;
+  }
+
+  .footer a { color: rgba(0,255,209,0.5); text-decoration: none; }
+  .footer a:hover { color: var(--cyan); }
+
+  /* ===== CORNER DECORATIONS ===== */
+  .corner-box {
+    position: relative;
+  }
+
+  .corner-box::before, .corner-box::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-color: var(--cyan);
+    border-style: solid;
+    opacity: 0.4;
+  }
+
+  .corner-box::before {
+    top: -1px; left: -1px;
+    border-width: 2px 0 0 2px;
+  }
+
+  .corner-box::after {
+    bottom: -1px; right: -1px;
+    border-width: 0 2px 2px 0;
+  }
+
+  /* ===== GRADIENT TEXT ===== */
+  .gradient-text {
+    background: linear-gradient(135deg, var(--cyan), var(--blue), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* hidden rows for search */
+  tr.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div style="width:36px;height:36px;background:linear-gradient(135deg,#8b00ff,#3b82ff,#00ffd1);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:0.7rem;font-weight:900;color:#000;letter-spacing:-1px;">WS</div>
+    <div>
+      <div class="topbar-title">J.A.R.V.I.S.</div>
+      <div class="topbar-subtitle">WEHTTAMSNAPS COMMAND INTERFACE v2.0</div>
+    </div>
+  </div>
+
+  <nav class="topbar-nav">
+    <button class="nav-btn active" onclick="showTab('keybinds', this)">Keybinds</button>
+    <button class="nav-btn" onclick="showTab('sounds', this)">Sounds</button>
+    <button class="nav-btn" onclick="showTab('setup', this)">Setup</button>
+    <button class="nav-btn" onclick="showTab('system', this)">System</button>
+    <button class="nav-btn" onclick="showTab('repo', this)">Repo</button>
+  </nav>
+
+  <div class="status-dot">
+    <div class="dot"></div>
+    SYSTEMS ONLINE
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">[ SYSTEM INITIALIZED — ARCH LINUX + SWAYFX + NOCTALIA SHELL ]</div>
+    <h1 class="hero-title">
+      <span class="j">J</span><span class="a">.</span><span class="r">A</span><span class="a">.</span><span class="v">R</span><span class="a">.</span><span class="i2">V</span><span class="a">.</span><span class="s">I</span><span class="a">.</span><span class="j">S</span><span class="a">.</span>
+    </h1>
+    <div class="hero-sub">JUST A RATHER VERY INTELLIGENT SYSTEM — WEHTTAMSNAPS EDITION</div>
+    <div class="hero-meta">
+      Author: <span>Matthew</span> &nbsp;|&nbsp;
+      GitHub: <span>@Crowdrocker</span> &nbsp;|&nbsp;
+      Twitch/YouTube: <span>WehttamSnaps</span> &nbsp;|&nbsp;
+      CPU: <span>i7-4790 @ 4GHz</span> &nbsp;|&nbsp;
+      GPU: <span>RX 580</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('keybinds', this)">⌨️ Keybinds</button>
+    <button class="tab" onclick="showTab('sounds', this)">🔊 Sound System</button>
+    <button class="tab" onclick="showTab('setup', this)">⚙️ Setup Guide</button>
+    <button class="tab" onclick="showTab('system', this)">🖥️ System Info</button>
+    <button class="tab" onclick="showTab('repo', this)">📁 Repo Structure</button>
+  </div>
+
+  <!-- ==================== KEYBINDS TAB ==================== -->
+  <div id="tab-keybinds" class="tab-content active">
+    <input class="keybind-search" type="text" placeholder="// Search keybinds..." oninput="searchKeybinds(this.value)" />
+
+    <div class="grid-2">
+
+      <!-- LEFT COL -->
+      <div>
+        <div class="card">
+          <div class="card-title">// J.A.R.V.I.S. Quickshell</div>
+          <table class="keybind-table" id="tbl-jarvis">
+            <tr><td class="key-col"><span class="key">Super</span><span class="key">Space</span></td><td class="desc-col">Application Launcher</td><td class="note-col">Noctalia</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">V</span></td><td class="desc-col">Clipboard Manager</td><td class="note-col">History</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">M</span></td><td class="desc-col">Task Manager</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">N</span></td><td class="desc-col">Notification Center</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">,</span></td><td class="desc-col">Settings</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">P</span></td><td class="desc-col">Notepad</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">C</span></td><td class="desc-col">Control Center</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Y</span></td><td class="desc-col">Wallpaper Browser</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">X</span></td><td class="desc-col">Power Menu</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Alt</span><span class="key">L</span></td><td class="desc-col">Lock Screen</td><td class="note-col">Swaylock</td></tr>
+          </table>
+        </div>
+
+        <br>
+
+        <div class="card blue">
+          <div class="card-title">// Application Launchers</div>
+          <table class="keybind-table">
+            <tr><td class="key-col"><span class="key">Super</span><span class="key">Enter</span></td><td class="desc-col">Ghostty Terminal</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">D</span></td><td class="desc-col">Rofi App Launcher</td><td class="note-col">drun</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">B</span></td><td class="desc-col">Brave Browser</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">F</span></td><td class="desc-col">File Manager</td><td class="note-col">Thunar</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">E</span></td><td class="desc-col">Kate Editor</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">H</span></td><td class="desc-col">Keybinds Help</td><td class="note-col">This screen!</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Shift</span><span class="key">W</span></td><td class="desc-col">Welcome Screen</td><td class="note-col">wehttamsnaps</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">O</span></td><td class="desc-col">OBS Studio</td><td class="note-col">Streaming</td></tr>
+          </table>
+        </div>
+
+        <br>
+
+        <div class="card pink">
+          <div class="card-title">// Gaming Mode</div>
+          <table class="keybind-table">
+            <tr><td class="key-col"><span class="key">Super</span><span class="key">G</span></td><td class="desc-col">Toggle Gaming Mode</td><td class="note-col">iDroid sounds</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Alt</span><span class="key">S</span></td><td class="desc-col">Launch Steam</td><td class="note-col">+sound</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Alt</span><span class="key">G</span></td><td class="desc-col">Steam + Gamescope</td><td class="note-col">Performance</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Alt</span><span class="key">L</span></td><td class="desc-col">Launch Lutris</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Alt</span><span class="key">P</span></td><td class="desc-col">ProtonUp-Qt</td><td class="note-col">GE-Proton mgr</td></tr>
+          </table>
+        </div>
+
+        <br>
+
+        <div class="card blue">
+          <div class="card-title">// Webapps</div>
+          <table class="keybind-table">
+            <tr><td class="key-col"><span class="key">Super</span><span class="key">Ctrl</span><span class="key">T</span></td><td class="desc-col">Twitch</td><td class="note-col">webapp</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Ctrl</span><span class="key">Y</span></td><td class="desc-col">YouTube</td><td class="note-col">webapp</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Ctrl</span><span class="key">D</span></td><td class="desc-col">Discord</td><td class="note-col">webapp</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Ctrl</span><span class="key">S</span></td><td class="desc-col">Spotify</td><td class="note-col">webapp</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- RIGHT COL -->
+      <div>
+        <div class="card">
+          <div class="card-title">// Window Management</div>
+          <table class="keybind-table">
+            <tr><td class="key-col"><span class="key">Super</span><span class="key">Q</span></td><td class="desc-col">Close Window</td><td class="note-col">+sound</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Shift</span><span class="key">Q</span></td><td class="desc-col">Kill Window</td><td class="note-col">Force</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">F</span></td><td class="desc-col">Maximize Column</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Shift</span><span class="key">F</span></td><td class="desc-col">Toggle Fullscreen</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Ctrl</span><span class="key">V</span></td><td class="desc-col">Toggle Floating</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">W</span></td><td class="desc-col">Toggle Tabbed</td><td class="note-col">Niri</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">R</span></td><td class="desc-col">Preset Width</td><td class="note-col">Cycle</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Alt</span><span class="key">C</span></td><td class="desc-col">Center Column</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">←/→</span></td><td class="desc-col">Focus Left / Right</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">↑/↓</span></td><td class="desc-col">Focus Up / Down</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Ctrl</span><span class="key">H/;</span></td><td class="desc-col">Move Win Left/Right</td><td class="note-col">Vim</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Ctrl</span><span class="key">K/J</span></td><td class="desc-col">Move Win Up/Down</td><td class="note-col">Vim</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">−</span></td><td class="desc-col">Decrease Width -10%</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">=</span></td><td class="desc-col">Increase Width +10%</td><td class="note-col"></td></tr>
+          </table>
+        </div>
+
+        <br>
+
+        <div class="card">
+          <div class="card-title">// Screenshots & Recording</div>
+          <table class="keybind-table">
+            <tr><td class="key-col"><span class="key">Print</span></td><td class="desc-col">Full Screenshot</td><td class="note-col">+sound</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Print</span></td><td class="desc-col">Region Screenshot</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Alt</span><span class="key">Print</span></td><td class="desc-col">Active Window</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Ctrl</span><span class="key">Print</span></td><td class="desc-col">Niri Screen Capture</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Shift</span><span class="key">E</span></td><td class="desc-col">Photo Export</td><td class="note-col">+JARVIS sound</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Shift</span><span class="key">R</span></td><td class="desc-col">Screen Recording</td><td class="note-col">OBS</td></tr>
+          </table>
+        </div>
+
+        <br>
+
+        <div class="card blue">
+          <div class="card-title">// Audio & Media</div>
+          <table class="keybind-table">
+            <tr><td class="key-col"><span class="key">Vol↑</span></td><td class="desc-col">Volume Up</td><td class="note-col">+JARVIS</td></tr>
+            <tr><td><span class="key">Vol↓</span></td><td class="desc-col">Volume Down</td><td class="note-col">+JARVIS</td></tr>
+            <tr><td><span class="key">Mute</span></td><td class="desc-col">Mute / Unmute</td><td class="note-col">Adaptive sound</td></tr>
+            <tr><td><span class="key">MicMute</span></td><td class="desc-col">Mic Toggle</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Play</span></td><td class="desc-col">Play / Pause</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Next</span></td><td class="desc-col">Next Track</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Prev</span></td><td class="desc-col">Previous Track</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Brt↑/↓</span></td><td class="desc-col">Brightness</td><td class="note-col"></td></tr>
+          </table>
+        </div>
+
+        <br>
+
+        <div class="card pink">
+          <div class="card-title">// System</div>
+          <table class="keybind-table">
+            <tr><td class="key-col"><span class="key">Super</span><span class="key">Ctrl</span><span class="key">L</span></td><td class="desc-col">Lock Screen</td><td class="note-col">Swaylock</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Ctrl</span><span class="key">P</span></td><td class="desc-col">Power Menu</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Alt</span><span class="key">E</span></td><td class="desc-col">Exit Niri</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Ctrl</span><span class="key">Alt</span><span class="key">Del</span></td><td class="desc-col">Quit Compositor</td><td class="note-col">Emergency</td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Shift</span><span class="key">P</span></td><td class="desc-col">Power Off Monitors</td><td class="note-col"></td></tr>
+            <tr><td><span class="key">Super</span><span class="key">Shift</span><span class="key">/</span></td><td class="desc-col">Niri Hotkey Overlay</td><td class="note-col"></td></tr>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Workspaces -->
+    <br>
+    <div class="card">
+      <div class="card-title">// Workspaces — <span style="opacity:0.5;font-weight:400">Super + [1-0] to switch · Super + Shift + [1-0] to move window</span></div>
+      <div class="ws-grid">
+        <div class="ws-badge"><span class="ws-num">1</span><span class="ws-name">Browser</span></div>
+        <div class="ws-badge"><span class="ws-num">2</span><span class="ws-name">Terminal/Dev</span></div>
+        <div class="ws-badge"><span class="ws-num">3</span><span class="ws-name">Gaming</span></div>
+        <div class="ws-badge"><span class="ws-num">4</span><span class="ws-name">Streaming</span></div>
+        <div class="ws-badge"><span class="ws-num">5</span><span class="ws-name">Photography</span></div>
+        <div class="ws-badge"><span class="ws-num">6</span><span class="ws-name">Media/Video</span></div>
+        <div class="ws-badge"><span class="ws-num">7</span><span class="ws-name">Communication</span></div>
+        <div class="ws-badge"><span class="ws-num">8</span><span class="ws-name">Music/Audio</span></div>
+        <div class="ws-badge"><span class="ws-num">9</span><span class="ws-name">Files</span></div>
+        <div class="ws-badge"><span class="ws-num">0</span><span class="ws-name">Misc/System</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SOUNDS TAB ==================== -->
+  <div id="tab-sounds" class="tab-content">
+    <div class="grid-2" style="margin-bottom:2rem">
+      <div class="card">
+        <div class="card-title">// J.A.R.V.I.S. — Professional Mode (Paul Bettany)</div>
+        <div class="spec-row"><span class="spec-label">Voice Pack</span><span class="spec-value" style="color:var(--cyan)">jarvis-v1-paul-bettany-tts</span></div>
+        <div class="spec-row"><span class="spec-label">Location</span><span class="spec-value">/usr/share/wehttamsnaps/sounds/jarvis/</span></div>
+        <div class="spec-row"><span class="spec-label">Active When</span><span class="spec-value">Normal / Work / Photo Mode</span></div>
+        <div class="spec-row"><span class="spec-label">Total Sounds</span><span class="spec-value" style="color:var(--cyan)">48 clips</span></div>
+      </div>
+      <div class="card pink">
+        <div class="card-title">// iDroid — Gaming / Tactical Mode</div>
+        <div class="spec-row"><span class="spec-label">Voice Pack</span><span class="spec-value" style="color:var(--pink)">idroid-tts-computer-ai-voice</span></div>
+        <div class="spec-row"><span class="spec-label">Location</span><span class="spec-value">/usr/share/wehttamsnaps/sounds/idroid/</span></div>
+        <div class="spec-row"><span class="spec-label">Active When</span><span class="spec-value" style="color:var(--pink)">Gaming Mode ON (Super+G)</span></div>
+        <div class="spec-row"><span class="spec-label">Total Sounds</span><span class="spec-value" style="color:var(--pink)">8 clips</span></div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-tag">// J.A.R.V.I.S. Sound Library</div>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="sound-grid">
+      <div class="sound-card"><div class="sound-icon">🚀</div><div class="sound-label">startup.mp3</div><div class="sound-desc">"Allow me to introduce myself..."</div></div>
+      <div class="sound-card"><div class="sound-icon">😴</div><div class="sound-label">shutdown.mp3</div><div class="sound-desc">"Shutting down. Have a good day, Matthew."</div></div>
+      <div class="sound-card"><div class="sound-icon">🔔</div><div class="sound-label">notification.mp3</div><div class="sound-desc">"Sir, you have a notification"</div></div>
+      <div class="sound-card"><div class="sound-icon">🔇</div><div class="sound-label">audio-mute.mp3</div><div class="sound-desc">"Audio muted, sir"</div></div>
+      <div class="sound-card"><div class="sound-icon">🔊</div><div class="sound-label">audio-unmute.mp3</div><div class="sound-desc">"Audio restored"</div></div>
+      <div class="sound-card"><div class="sound-icon">📸</div><div class="sound-label">screenshot.mp3</div><div class="sound-desc">"Screenshot captured"</div></div>
+      <div class="sound-card"><div class="sound-icon">📤</div><div class="sound-label">photo-export.mp3</div><div class="sound-desc">"Export complete, sir"</div></div>
+      <div class="sound-card"><div class="sound-icon">📺</div><div class="sound-label">jarvis-streaming.mp3</div><div class="sound-desc">"Streaming systems online"</div></div>
+      <div class="sound-card"><div class="sound-icon">🎮</div><div class="sound-label">jarvis-gaming.mp3</div><div class="sound-desc">"Gaming mode activated"</div></div>
+      <div class="sound-card"><div class="sound-icon">🔄</div><div class="sound-label">reloading-config.mp3</div><div class="sound-desc">"Reloading configuration"</div></div>
+      <div class="sound-card"><div class="sound-icon">🌅</div><div class="sound-label">morning.mp3</div><div class="sound-desc">"Good morning, Matthew"</div></div>
+      <div class="sound-card"><div class="sound-icon">☀️</div><div class="sound-label">afternoon.mp3</div><div class="sound-desc">"Good afternoon, sir"</div></div>
+      <div class="sound-card"><div class="sound-icon">🌙</div><div class="sound-label">evening.mp3</div><div class="sound-desc">"Good evening, Matthew"</div></div>
+      <div class="sound-card"><div class="sound-icon">🔒</div><div class="sound-label">locking-screen.mp3</div><div class="sound-desc">"Screen locked"</div></div>
+      <div class="sound-card"><div class="sound-icon">🦊</div><div class="sound-label">launching-firefox.mp3</div><div class="sound-desc">"Launching Firefox"</div></div>
+      <div class="sound-card"><div class="sound-icon">💬</div><div class="sound-label">launching-discord.mp3</div><div class="sound-desc">"Launching Discord"</div></div>
+      <div class="sound-card"><div class="sound-icon">🎵</div><div class="sound-label">launching-spotify.mp3</div><div class="sound-desc">"Launching Spotify"</div></div>
+      <div class="sound-card"><div class="sound-icon">🖼️</div><div class="sound-label">launching-gimp.mp3</div><div class="sound-desc">"Launching GIMP"</div></div>
+      <div class="sound-card"><div class="sound-icon">⚠️</div><div class="sound-label">jarvis-warning.mp3</div><div class="sound-desc">"Warning: attention required"</div></div>
+      <div class="sound-card"><div class="sound-icon">🔧</div><div class="sound-label">jarvis-update.mp3</div><div class="sound-desc">"System update available"</div></div>
+    </div>
+
+    <br>
+    <div class="section-header">
+      <div class="section-tag">// iDroid Sound Library</div>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="sound-grid">
+      <div class="sound-card idroid"><div class="sound-icon">⚔️</div><div class="sound-label">gamemode-on.mp3</div><div class="sound-desc">"Combat systems online"</div></div>
+      <div class="sound-card idroid"><div class="sound-icon">🕊️</div><div class="sound-label">gamemode-off.mp3</div><div class="sound-desc">"Returning to normal operations"</div></div>
+      <div class="sound-card idroid"><div class="sound-icon">🚨</div><div class="sound-label">alert-high.mp3</div><div class="sound-desc">"Alert! High priority"</div></div>
+      <div class="sound-card idroid"><div class="sound-icon">⚡</div><div class="sound-label">alert-medium.mp3</div><div class="sound-desc">"Caution"</div></div>
+      <div class="sound-card idroid"><div class="sound-icon">🎯</div><div class="sound-label">mission-start.mp3</div><div class="sound-desc">"Mission start"</div></div>
+      <div class="sound-card idroid"><div class="sound-icon">🚀</div><div class="sound-label">steam-launch.mp3</div><div class="sound-desc">"Game launching"</div></div>
+      <div class="sound-card idroid"><div class="sound-icon">📡</div><div class="sound-label">discord-notify.mp3</div><div class="sound-desc">"Incoming transmission"</div></div>
+      <div class="sound-card idroid"><div class="sound-icon">🌡️</div><div class="sound-label">performance-warn.mp3</div><div class="sound-desc">"System performance critical"</div></div>
+    </div>
+
+    <br>
+    <div class="card blue">
+      <div class="card-title">// Sound Manager CLI</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        <span class="comment"># Play a sound event</span><br>
+        <span class="cmd">sound-system</span> <span class="arg">startup</span><br>
+        <span class="cmd">sound-system</span> <span class="arg">gaming</span><br>
+        <span class="cmd">sound-system</span> <span class="arg">streaming</span><br>
+        <span class="cmd">sound-system</span> <span class="arg">notification</span><br>
+        <span class="cmd">sound-system</span> <span class="arg">shutdown</span> <span class="str">--volume 80</span><br>
+        <span class="comment"># List all sounds</span><br>
+        <span class="cmd">sound-system</span> <span class="arg">list</span><br>
+        <span class="comment"># Test all sounds</span><br>
+        <span class="cmd">sound-system</span> <span class="arg">test</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SETUP TAB ==================== -->
+  <div id="tab-setup" class="tab-content">
+    <div class="grid-2">
+      <div>
+        <div class="card">
+          <div class="card-title">// Phase 1 — Base Arch Install</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+            <span class="comment"># Update system</span><br>
+            <span class="cmd">sudo pacman</span> <span class="arg">-Syu</span><br><br>
+            <span class="comment"># Install AUR helper</span><br>
+            <span class="cmd">git clone</span> https://aur.archlinux.org/yay.git<br>
+            <span class="cmd">cd</span> yay &amp;&amp; <span class="cmd">makepkg</span> <span class="arg">-si</span><br><br>
+            <span class="comment"># Core WM + compositor</span><br>
+            <span class="cmd">yay</span> <span class="arg">-S</span> swayfx niri waybar wofi rofi<br>
+            <span class="cmd">yay</span> <span class="arg">-S</span> ghostty foot swaylock-effects<br>
+            <span class="cmd">yay</span> <span class="arg">-S</span> noctalia-shell-git
+          </div>
+        </div>
+
+        <br>
+
+        <div class="card blue">
+          <div class="card-title">// Phase 2 — Gaming Stack</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+            <span class="comment"># Steam + Proton</span><br>
+            <span class="cmd">yay</span> <span class="arg">-S</span> steam proton-ge-custom<br>
+            <span class="cmd">yay</span> <span class="arg">-S</span> lutris gamemode gamescope<br>
+            <span class="cmd">yay</span> <span class="arg">-S</span> mangohud vkbasalt<br><br>
+            <span class="comment"># Wine stack for MO2</span><br>
+            <span class="cmd">yay</span> <span class="arg">-S</span> wine-staging winetricks<br>
+            <span class="cmd">yay</span> <span class="arg">-S</span> protontricks<br><br>
+            <span class="comment"># AMD GPU optimizations (RX 580)</span><br>
+            <span class="cmd">sudo</span> echo <span class="str">"RADV_PERFTEST=gpl"</span> >> /etc/environment<br>
+            <span class="cmd">sudo</span> echo <span class="str">"AMD_VULKAN_ICD=RADV"</span> >> /etc/environment
+          </div>
+        </div>
+
+        <br>
+
+        <div class="card pink">
+          <div class="card-title">// Phase 3 — Photography Workflow</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+            <span class="comment"># Photography suite</span><br>
+            <span class="cmd">yay</span> <span class="arg">-S</span> darktable digikam gimp krita<br>
+            <span class="cmd">yay</span> <span class="arg">-S</span> rawtherapee inkscape<br><br>
+            <span class="comment"># Photography Workflow Workspaces:</span><br>
+            <span class="comment"># WS5 = DigiKam  (import)</span><br>
+            <span class="comment"># WS5 = Darktable (RAW edit)</span><br>
+            <span class="comment"># WS5 = GIMP     (retouch)</span><br>
+            <span class="comment"># WS5 = Krita    (paint/composite)</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="card-title">// Phase 4 — Audio Routing (PipeWire)</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+            <span class="comment"># PipeWire stack</span><br>
+            <span class="cmd">yay</span> <span class="arg">-S</span> pipewire pipewire-pulse wireplumber<br>
+            <span class="cmd">yay</span> <span class="arg">-S</span> qpwgraph helvum pavucontrol<br><br>
+            <span class="comment"># Create virtual sinks for streaming</span><br>
+            <span class="comment"># Game audio → sink "game_audio"</span><br>
+            <span class="comment"># Browser audio → sink "browser_audio"</span><br>
+            <span class="comment"># Discord → sink "comms_audio"</span><br>
+            <span class="comment"># All → OBS Virtual Cable</span><br><br>
+            <span class="cmd">pactl</span> load-module module-null-sink <span class="arg">sink_name=game_audio</span><br>
+            <span class="cmd">pactl</span> load-module module-null-sink <span class="arg">sink_name=browser_audio</span><br>
+            <span class="cmd">pactl</span> load-module module-null-sink <span class="arg">sink_name=comms_audio</span>
+          </div>
+        </div>
+
+        <br>
+
+        <div class="card blue">
+          <div class="card-title">// Phase 5 — J.A.R.V.I.S. Sounds</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+            <span class="comment"># Install sound-system</span><br>
+            <span class="cmd">sudo cp</span> sound-system /usr/local/bin/<br>
+            <span class="cmd">sudo chmod</span> +x /usr/local/bin/sound-system<br><br>
+            <span class="comment"># Create sound directories</span><br>
+            <span class="cmd">sudo mkdir</span> -p /usr/share/wehttamsnaps/sounds/jarvis<br>
+            <span class="cmd">sudo mkdir</span> -p /usr/share/wehttamsnaps/sounds/idroid<br><br>
+            <span class="comment"># Download sounds from 101soundboards.com</span><br>
+            <span class="comment"># jarvis-v1-paul-bettany-tts-computer-ai-voice</span><br>
+            <span class="comment"># idroid-tts-computer-ai-voice</span><br><br>
+            <span class="comment"># Test installation</span><br>
+            <span class="cmd">sound-system</span> startup
+          </div>
+        </div>
+
+        <br>
+
+        <div class="card">
+          <div class="card-title">// Phase 6 — WehttamSnaps Config</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+            <span class="comment"># Clone dotfiles</span><br>
+            <span class="cmd">git clone</span> https://github.com/Crowdrocker/wehttamsnaps-dots<br>
+            <span class="cmd">cd</span> wehttamsnaps-dots<br><br>
+            <span class="comment"># Run installer</span><br>
+            <span class="cmd">chmod</span> +x install.sh<br>
+            <span class="cmd">./install.sh</span><br><br>
+            <span class="comment"># Set Steam library paths</span><br>
+            <span class="comment"># /run/media/wehttamsnaps/LINUXDRIVE/SteamLibrary</span><br>
+            <span class="comment"># /run/media/wehttamsnaps/LINUXDRIVE/Modlist_Packs</span><br>
+            <span class="comment"># /run/media/wehttamsnaps/LINUXDRIVE/Modlist_Downloads</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MO2 Linux Helper -->
+    <br>
+    <div class="card pink corner-box">
+      <div class="card-title">// MO2 Linux Helper — Tauri App (Cyberpunk Theme)</div>
+      <div class="grid-3">
+        <div>
+          <div class="spec-row"><span class="spec-label">Framework</span><span class="spec-value" style="color:var(--pink)">Tauri 2.x (Rust + JS)</span></div>
+          <div class="spec-row"><span class="spec-label">Frontend</span><span class="spec-value">React + Cyberpunk CSS</span></div>
+          <div class="spec-row"><span class="spec-label">Theme</span><span class="spec-value">Dark industrial, neon cyan/orange</span></div>
+          <div class="spec-row"><span class="spec-label">Packaging</span><span class="spec-value">AUR + Flatpak</span></div>
+        </div>
+        <div>
+          <div style="font-family:var(--font-mono);font-size:0.7rem;color:rgba(204,232,228,0.5);line-height:2;">
+            <div style="color:var(--cyan)">Sidebar Modules:</div>
+            ▸ Setup Wizard<br>
+            ▸ Dependencies<br>
+            ▸ Game Fixes (18 games)<br>
+            ▸ NXM Links<br>
+            ▸ Non-Steam Shortcut<br>
+            ▸ Flatpak Config
+          </div>
+        </div>
+        <div>
+          <div style="font-family:var(--font-mono);font-size:0.7rem;color:rgba(204,232,228,0.5);line-height:2;">
+            <div style="color:var(--pink)">Supported Games:</div>
+            Cyberpunk 2077<br>
+            Fallout 4 / NV / 3<br>
+            Skyrim SE / VR<br>
+            Elden Ring / BG3<br>
+            Oblivion Remastered<br>
+            + 9 more
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="code-block" style="border-left-color:var(--pink)">
+        <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        <span class="comment"># Tauri quick-start guide</span><br>
+        <span class="cmd">curl</span> --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh<br>
+        <span class="cmd">yay</span> <span class="arg">-S</span> nodejs npm webkit2gtk<br>
+        <span class="cmd">npm</span> create tauri-app@latest mo2-linux-helper<br>
+        <span class="cmd">cd</span> mo2-linux-helper<br>
+        <span class="cmd">npm</span> install<br>
+        <span class="cmd">npm</span> run tauri dev<br>
+        <span class="comment"># VSCode + rust-analyzer + tauri-intellij recommended</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SYSTEM TAB ==================== -->
+  <div id="tab-system" class="tab-content">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">// Hardware Specs</div>
+        <div class="spec-row"><span class="spec-label">Machine</span><span class="spec-value">Dell XPS 8700</span></div>
+        <div class="spec-row"><span class="spec-label">CPU</span><span class="spec-value">Intel i7-4790 @ 4.00 GHz (8T)</span></div>
+        <div class="spec-row"><span class="spec-label">RAM</span><span class="spec-value">16 GB DDR3</span></div>
+        <div class="spec-row"><span class="spec-label">GPU</span><span class="spec-value" style="color:var(--pink)">AMD Radeon RX 580</span></div>
+        <div class="spec-row"><span class="spec-label">Display</span><span class="spec-value">1920×1080 @ 60Hz</span></div>
+        <div class="spec-row"><span class="spec-label">SSD Boot</span><span class="spec-value">120 GB (Arch)</span></div>
+        <div class="spec-row"><span class="spec-label">SSD Alt</span><span class="spec-value">120 GB (Extra)</span></div>
+        <div class="spec-row"><span class="spec-label">HDD Games</span><span class="spec-value" style="color:var(--cyan)">1 TB (LINUXDRIVE)</span></div>
+        <div class="spec-row"><span class="spec-label">OS</span><span class="spec-value">Arch Linux</span></div>
+        <div class="spec-row"><span class="spec-label">WM</span><span class="spec-value">SwayFx / Niri</span></div>
+        <div class="spec-row"><span class="spec-label">Shell</span><span class="spec-value">Noctalia-Shell</span></div>
+        <div class="spec-row"><span class="spec-label">Terminal</span><span class="spec-value">Ghostty</span></div>
+        <div class="spec-row"><span class="spec-label">Audio</span><span class="spec-value">PipeWire + WirePlumber</span></div>
+      </div>
+
+      <div>
+        <div class="card blue">
+          <div class="card-title">// Drive Paths</div>
+          <div class="code-block" style="border-left-color:var(--blue)">
+            <span class="comment"># Gaming / Media Drive (1TB)</span><br>
+            <span class="str">/run/media/wehttamsnaps/LINUXDRIVE/</span><br>
+            ├── <span class="cmd">SteamLibrary/</span><br>
+            ├── <span class="cmd">Modlist_Packs/</span><br>
+            └── <span class="cmd">Modlist_Downloads/</span><br><br>
+            <span class="comment"># System Binaries</span><br>
+            <span class="str">/usr/local/bin/</span><br>
+            ├── <span class="cmd">jarvis</span><br>
+            ├── <span class="cmd">jarvis-menu</span><br>
+            └── <span class="cmd">sound-system</span><br><br>
+            <span class="comment"># Sound Assets</span><br>
+            <span class="str">/usr/share/wehttamsnaps/sounds/</span><br>
+            ├── <span class="cmd">jarvis/</span>  <span class="comment">(48 clips)</span><br>
+            └── <span class="cmd">idroid/</span>  <span class="comment">(8 clips)</span>
+          </div>
+        </div>
+
+        <br>
+
+        <div class="card">
+          <div class="card-title">// Status</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem">
+            <span class="status-badge ok">● J.A.R.V.I.S. ACTIVE</span>
+            <span class="status-badge ok">● PIPEWIRE OK</span>
+            <span class="status-badge ok">● RADV (RX 580)</span>
+            <span class="status-badge warn">◐ GAMEMODE READY</span>
+            <span class="status-badge gaming">● GAMING MODE OFF</span>
+          </div>
+          <div class="spec-row"><span class="spec-label">Wayland Backend</span><span class="spec-value" style="color:var(--cyan)">GDK_BACKEND=wayland</span></div>
+          <div class="spec-row"><span class="spec-label">Vulkan Driver</span><span class="spec-value">RADV (Mesa)</span></div>
+          <div class="spec-row"><span class="spec-label">Perf Tweak</span><span class="spec-value">RADV_PERFTEST=gpl</span></div>
+          <div class="spec-row"><span class="spec-label">ZRAM</span><span class="spec-value">Enabled (swap compression)</span></div>
+          <div class="spec-row"><span class="spec-label">GameMode</span><span class="spec-value">CPU governor → performance</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== REPO TAB ==================== -->
+  <div id="tab-repo" class="tab-content">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">// Repository Structure</div>
+        <div class="tree">
+<span class="dir">wehttamsnaps-dots/</span><br>
+├── <span class="exec">README.md</span><br>
+├── <span class="exec">install.sh</span>           <span class="comment"># One-shot installer</span><br>
+├── <span class="exec">logo.txt</span>             <span class="comment"># ASCII brand art</span><br>
+├── <span class="dir">docs/</span><br>
+│   ├── <span class="file">INSTALL.md</span><br>
+│   ├── <span class="file">QUICKSTART.md</span><br>
+│   └── <span class="file">TAURI-GUIDE.md</span>       <span class="comment"># MO2 app guide</span><br>
+├── <span class="dir">configs/</span><br>
+│   ├── <span class="dir">swayfx/</span><br>
+│   │   ├── <span class="file">config</span>           <span class="comment"># Main SwayFx config</span><br>
+│   │   ├── <span class="dir">config.d/</span>        <span class="comment"># Split configs</span><br>
+│   │   │   ├── <span class="file">01-variables.conf</span><br>
+│   │   │   ├── <span class="file">02-keybinds.conf</span><br>
+│   │   │   ├── <span class="file">03-windows.conf</span><br>
+│   │   │   ├── <span class="file">04-workspaces.conf</span><br>
+│   │   │   ├── <span class="file">05-autostart.conf</span><br>
+│   │   │   └── <span class="file">06-gaming.conf</span><br>
+│   │   └── <span class="dir">scripts/</span><br>
+│   │       ├── <span class="exec">toggle-gamemode.sh</span><br>
+│   │       ├── <span class="exec">audio-setup.sh</span><br>
+│   │       └── <span class="exec">photo-export.sh</span><br>
+│   ├── <span class="dir">noctalia/</span>            <span class="comment"># Shell widgets</span><br>
+│   │   ├── <span class="dir">widgets/</span><br>
+│   │   │   ├── <span class="dir">gaming/</span><br>
+│   │   │   └── <span class="dir">work/</span><br>
+│   │   ├── <span class="file">welcome.py</span><br>
+│   │   └── <span class="file">settings.sh</span><br>
+│   └── <span class="dir">rofi/</span><br>
+│       └── <span class="file">wehttamsnaps.rasi</span>   <span class="comment"># JARVIS theme</span><br>
+├── <span class="dir">sounds/</span>               <span class="comment"># Sound placeholders</span><br>
+│   ├── <span class="dir">jarvis/</span><br>
+│   └── <span class="dir">idroid/</span><br>
+├── <span class="dir">wallpapers/</span><br>
+├── <span class="dir">themes/</span><br>
+│   ├── <span class="file">gtk-wehttamsnaps.css</span><br>
+│   └── <span class="file">kvantum-theme/</span><br>
+├── <span class="dir">webapps/</span><br>
+│   ├── <span class="file">youtube.webapp</span><br>
+│   ├── <span class="file">twitch.webapp</span><br>
+│   ├── <span class="file">discord.webapp</span><br>
+│   └── <span class="file">spotify.webapp</span><br>
+└── <span class="dir">packages/</span><br>
+    ├── <span class="file">package.list.txt</span><br>
+    └── <span class="file">aur.list.txt</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="card blue">
+          <div class="card-title">// Branch Structure</div>
+          <div class="tree">
+<span class="dir">main</span>                     <span class="comment"># Stable releases</span><br>
+<span class="dir">develop</span>                  <span class="comment"># Integration branch</span><br>
+<span class="dir">wehttamsnaps-theme</span>       <span class="comment"># Theming experiments</span><br>
+<span class="dir">wehttamsnaps-widgets</span>     <span class="comment"># Widget dev</span><br>
+<span class="dir">wallpapers</span>               <span class="comment"># Wallpaper collection</span><br>
+<span class="dir">jarvis-sounds</span>            <span class="comment"># Sound pack updates</span><br>
+<span class="dir">docs</span>                     <span class="comment"># Documentation</span><br>
+<span class="dir">mo2-helper</span>               <span class="comment"># Tauri MO2 app</span>
+          </div>
+        </div>
+
+        <br>
+
+        <div class="card pink">
+          <div class="card-title">// Keybinds JSON Strategy</div>
+          <div class="code-block" style="border-left-color:var(--pink)">
+            <span class="comment"># keybinds.json → single source of truth</span><br>
+            <span class="comment"># Run to regenerate cheat sheet:</span><br>
+            <span class="exec">./scripts/generate_cheatsheet.sh</span><br><br>
+            <span class="comment"># Output formats:</span><br>
+            <span class="str">  → rofi searchable dmenu</span><br>
+            <span class="str">  → yad GUI table</span><br>
+            <span class="str">  → this HTML dashboard</span><br>
+            <span class="str">  → printable PDF cheatsheet</span>
+          </div>
+        </div>
+
+        <br>
+
+        <div class="card">
+          <div class="card-title">// Links & Resources</div>
+          <div class="spec-row">
+            <span class="spec-label">GitHub</span>
+            <a href="https://github.com/Crowdrocker" target="_blank" style="color:var(--cyan);font-family:var(--font-mono);font-size:0.72rem;text-decoration:none;">github.com/Crowdrocker</a>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Twitch</span>
+            <a href="https://twitch.tv/WehttamSnaps" target="_blank" style="color:var(--blue);font-family:var(--font-mono);font-size:0.72rem;text-decoration:none;">twitch.tv/WehttamSnaps</a>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">YouTube</span>
+            <a href="https://youtube.com/@WehttamSnaps" target="_blank" style="color:var(--pink);font-family:var(--font-mono);font-size:0.72rem;text-decoration:none;">@WehttamSnaps</a>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Sounds</span>
+            <a href="https://101soundboards.com" target="_blank" style="color:var(--cyan);font-family:var(--font-mono);font-size:0.72rem;text-decoration:none;">101soundboards.com</a>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Noctalia</span>
+            <a href="https://github.com/noctalia/noctalia-shell" target="_blank" style="color:var(--blue);font-family:var(--font-mono);font-size:0.72rem;text-decoration:none;">noctalia-shell</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div>
+    <span style="color:var(--cyan)">J.A.R.V.I.S.</span> — WehttamSnaps Command Interface &nbsp;|&nbsp;
+    Author: <a href="https://github.com/Crowdrocker">Matthew @ Crowdrocker</a>
+  </div>
+  <div style="font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase">
+    Arch Linux · SwayFx · Niri · Noctalia Shell · AMD RX 580
+  </div>
+  <div>
+    <a href="https://twitch.tv/WehttamSnaps">Twitch</a> &nbsp;·&nbsp;
+    <a href="https://youtube.com/@WehttamSnaps">YouTube</a> &nbsp;·&nbsp;
+    <a href="https://github.com/Crowdrocker">GitHub</a>
+  </div>
+</footer>
+
+<script>
+function showTab(name, btn) {
+  // Hide all content
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  // Deactivate all btns
+  document.querySelectorAll('.tab, .nav-btn').forEach(b => b.classList.remove('active'));
+  // Show target
+  document.getElementById('tab-' + name).classList.add('active');
+  // Activate clicked button and its twin
+  if (btn) {
+    btn.classList.add('active');
+    // Sync the other set of buttons
+    document.querySelectorAll('.tab, .nav-btn').forEach(b => {
+      if (b !== btn && b.getAttribute('onclick') === btn.getAttribute('onclick')) {
+        b.classList.add('active');
+      }
+    });
+  }
+}
+
+function searchKeybinds(query) {
+  const q = query.toLowerCase().trim();
+  document.querySelectorAll('.keybind-table tr').forEach(row => {
+    if (!q) {
+      row.classList.remove('hidden');
+      return;
+    }
+    const text = row.textContent.toLowerCase();
+    row.classList.toggle('hidden', !text.includes(q));
+  });
+}
+
+function copyCode(btn) {
+  const block = btn.parentElement;
+  const text = block.innerText.replace('COPY\n', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'COPIED!';
+    setTimeout(() => btn.textContent = 'COPY', 2000);
+  });
+}
+
+// Typewriter boot effect on hero subtitle
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.querySelector('.hero-eyebrow');
+  const text = el.textContent;
+  el.textContent = '';
+  let i = 0;
+  const timer = setInterval(() => {
+    el.textContent += text[i++];
+    if (i >= text.length) clearInterval(timer);
+  }, 30);
+});
+</script>
+</body>
+</html>
