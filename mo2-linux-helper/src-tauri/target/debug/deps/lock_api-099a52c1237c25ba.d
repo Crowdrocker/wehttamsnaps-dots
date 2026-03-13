@@ -1,0 +1,10 @@
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/lock_api-099a52c1237c25ba.d: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/mutex.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/remutex.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/rwlock.rs
+
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/liblock_api-099a52c1237c25ba.rlib: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/mutex.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/remutex.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/rwlock.rs
+
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/liblock_api-099a52c1237c25ba.rmeta: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/mutex.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/remutex.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/rwlock.rs
+
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/lib.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/mutex.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/remutex.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lock_api-0.4.14/src/rwlock.rs:

@@ -1,0 +1,11 @@
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/phf-bdfba1089b52e0c2.d: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/map.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/ordered_map.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/ordered_set.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/set.rs
+
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/libphf-bdfba1089b52e0c2.rlib: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/map.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/ordered_map.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/ordered_set.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/set.rs
+
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/libphf-bdfba1089b52e0c2.rmeta: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/map.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/ordered_map.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/ordered_set.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/set.rs
+
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/lib.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/map.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/ordered_map.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/ordered_set.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/phf-0.10.1/src/set.rs:

@@ -1,0 +1,8 @@
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/gtk3_macros-24e3f5027feb4db9.d: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk3-macros-0.18.2/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk3-macros-0.18.2/src/attribute_parser.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk3-macros-0.18.2/src/composite_template_derive.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk3-macros-0.18.2/src/util.rs
+
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/libgtk3_macros-24e3f5027feb4db9.so: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk3-macros-0.18.2/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk3-macros-0.18.2/src/attribute_parser.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk3-macros-0.18.2/src/composite_template_derive.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk3-macros-0.18.2/src/util.rs
+
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk3-macros-0.18.2/src/lib.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk3-macros-0.18.2/src/attribute_parser.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk3-macros-0.18.2/src/composite_template_derive.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gtk3-macros-0.18.2/src/util.rs:

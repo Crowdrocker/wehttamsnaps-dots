@@ -1,0 +1,10 @@
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/icu_normalizer-4fa0ed1d42c960cf.d: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/properties.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/provider.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/uts46.rs
+
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/libicu_normalizer-4fa0ed1d42c960cf.rlib: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/properties.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/provider.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/uts46.rs
+
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/libicu_normalizer-4fa0ed1d42c960cf.rmeta: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/properties.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/provider.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/uts46.rs
+
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/lib.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/properties.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/provider.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/uts46.rs:

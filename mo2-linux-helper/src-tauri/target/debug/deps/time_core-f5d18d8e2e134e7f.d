@@ -1,0 +1,10 @@
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/time_core-f5d18d8e2e134e7f.d: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/convert.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/hint.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/util.rs
+
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/libtime_core-f5d18d8e2e134e7f.rlib: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/convert.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/hint.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/util.rs
+
+/home/wehttamsnaps/Documents/GitHub/wehttamsnaps-dots/mo2-linux-helper/src-tauri/target/debug/deps/libtime_core-f5d18d8e2e134e7f.rmeta: /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/lib.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/convert.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/hint.rs /home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/util.rs
+
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/lib.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/convert.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/hint.rs:
+/home/wehttamsnaps/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-core-0.1.8/src/util.rs:

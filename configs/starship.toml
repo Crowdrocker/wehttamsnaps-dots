@@ -1,220 +1,180 @@
-# ╔══════════════════════════════════════════════════════════════════╗
-# ║  starship.toml — WehttamSnaps Cyberpunk Prompt                  ║
-# ║  github.com/Crowdrocker  |  twitch.tv/WehttamSnaps              ║
-# ║                                                                  ║
-# ║  Palette:                                                        ║
-# ║    Cyan   #00ffd1  — primary / directories / git branch         ║
-# ║    Blue   #3b82ff  — secondary / language runtimes              ║
-# ║    Pink   #ff5af1  — accent / errors / alerts                   ║
-# ║    Dark   #0a0014  — background segments                        ║
-# ╚══════════════════════════════════════════════════════════════════╝
+palette = "ii"
 
-# ── Format ────────────────────────────────────────────────────────────
-# Two-line prompt:
-#   Line 1:  [WS] [dir] [git] [lang/runtime modules] [status]
-#   Line 2:  ❯  (cyan in normal mode, pink on error)
-
-format = """
-[╭](bold bright-black)\
-$os\
-$username\
-$hostname\
-$directory\
-$git_branch\
-$git_state\
-$git_status\
-$git_metrics\
-$fill\
-$nodejs\
-$python\
-$rust\
-$golang\
-$java\
-$lua\
-$docker_context\
-$jobs\
-$cmd_duration\
-$time\
-$line_break\
-[╰](bold bright-black)\
-$character"""
-
-# ── Palette ────────────────────────────────────────────────────────────
-palette = "wehttamsnaps"
-
-[palettes.wehttamsnaps]
-cyan    = "#00ffd1"
-blue    = "#3b82ff"
-pink    = "#ff5af1"
-dark    = "#0a0014"
-surface = "#110022"
-text    = "#cce8e4"
-dimtext = "#6a8e8a"
-white   = "#e8f8f5"
-yellow  = "#f4c430"
-red     = "#ff5af1"   # pink as "red" — on-brand error color
-
-# ── OS icon ────────────────────────────────────────────────────────────
-[os]
-disabled = false
-format   = "[$symbol]($style) "
-style    = "bold cyan"
-
-[os.symbols]
-Arch = " "
-Linux = " "
-Windows = " "
-Macos = " "
-
-# ── Username ───────────────────────────────────────────────────────────
+## FIRST LINE/ROW: Info & Status
+# First param ─┌
 [username]
-show_always = false           # only shows when SSH or root
-format      = "[$user]($style)[@](dimtext)"
-style_user  = "bold blue"
-style_root  = "bold pink"
+format = " [╭─$user]($style)@"
+show_always = true
+style_root = "bold red"
+style_user = "bold red"
 
-# ── Hostname ───────────────────────────────────────────────────────────
+# Second param
 [hostname]
-ssh_only  = true
-format    = "[$hostname]($style) "
-style     = "bold blue"
-trim_at   = "."
+disabled = false
+format = "[$hostname]($style) in "
+ssh_only = false
+style = "bold dimmed red"
+trim_at = "-"
 
-# ── Directory ──────────────────────────────────────────────────────────
+# Third param
 [directory]
-format            = "[  ](cyan)[$path]($style)[$read_only]($read_only_style) "
-style             = "bold cyan"
-read_only         = "  "
-read_only_style   = "pink"
-truncation_length = 4
-truncate_to_repo  = true
-home_symbol       = "~"
+style = "purple"
+truncate_to_repo = true
+truncation_length = 0
+truncation_symbol = "repo: "
 
-[directory.substitutions]
-"/run/media/wehttamsnaps/LINUXDRIVE" = "󰆼 LINUXDRIVE"
-"/run/media/wehttamsnaps/LINUXDRIVE/SteamLibrary" = " Steam"
-"/run/media/wehttamsnaps/LINUXDRIVE/Modlist_Packs" = "󰮦 Modpacks"
-"/run/media/wehttamsnaps/LINUXDRIVE/Modlist_Downloads" = "󰮦 ModDL"
-"~/.config/sway" = " Sway"
-"~/.config/noctalia" = " Noctalia"
-"~/.config/rofi" = " Rofi"
-"~/Pictures" = " Pictures"
-"~/Videos" = " Videos"
-"~/Downloads" = " Downloads"
+# Fourth param
+[sudo]
+disabled = false
 
-# ── Git Branch ─────────────────────────────────────────────────────────
-[git_branch]
-format   = "[  ](blue)[$branch(:$remote_branch)]($style) "
-style    = "bold blue"
-symbol   = ""
-truncation_length = 24
-
-# ── Git Status ─────────────────────────────────────────────────────────
+# Before all the version info (python, nodejs, php, etc.)
 [git_status]
-format      = "([$all_status$ahead_behind]($style) )"
-style       = "bold pink"
-ahead       = "⇡${count}"
-behind      = "⇣${count}"
-diverged    = "⇕⇡${ahead_count}⇣${behind_count}"
-conflicted  = "󰞇 "
-untracked   = "? "
-stashed     = " "
-modified    = "! "
-staged      = "+ "
-renamed     = "» "
-deleted     = "✘ "
+ahead = "⇡${count}"
+behind = "⇣${count}"
+deleted = "x"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+style = "white"
 
-# ── Git State (rebasing etc) ───────────────────────────────────────────
-[git_state]
-format = "[$state($progress_current/$progress_total)]($style) "
-style  = "bold yellow"
-
-# ── Git Metrics (added/deleted lines) ─────────────────────────────────
-[git_metrics]
-disabled       = false
-added_style    = "bold cyan"
-deleted_style  = "bold pink"
-format         = "([+$added]($added_style) )([-$deleted]($deleted_style) )"
-
-# ── Fill ───────────────────────────────────────────────────────────────
-# Pushes right-side modules to the far right
-[fill]
-symbol = " "
-style  = "bold bright-black"
-
-# ── Node.js ────────────────────────────────────────────────────────────
-[nodejs]
-format  = "[ ](blue)[$version]($style) "
-style   = "blue"
-version_format = "v${raw}"
-
-# ── Python ─────────────────────────────────────────────────────────────
-[python]
-format  = "[ ](blue)[$version]($style)([\\($virtualenv\\)](dimtext)) "
-style   = "blue"
-version_format = "${raw}"
-
-# ── Rust ───────────────────────────────────────────────────────────────
-[rust]
-format  = "[ ](blue)[$version]($style) "
-style   = "blue"
-version_format = "v${raw}"
-
-# ── Go ─────────────────────────────────────────────────────────────────
-[golang]
-format  = "[ ](blue)[$version]($style) "
-style   = "blue"
-
-# ── Java ───────────────────────────────────────────────────────────────
-[java]
-format  = "[ ](blue)[$version]($style) "
-style   = "blue"
-
-# ── Lua ────────────────────────────────────────────────────────────────
-[lua]
-format  = "[ ](blue)[$version]($style) "
-style   = "blue"
-
-# ── Docker context ─────────────────────────────────────────────────────
-[docker_context]
-format = "[ ](blue)[$context]($style) "
-style  = "blue"
-
-# ── Background Jobs ────────────────────────────────────────────────────
-[jobs]
-format    = "[$symbol$number]($style) "
-style     = "bold yellow"
-symbol    = "󰒓 "
-threshold = 1
-
-# ── Command Duration ───────────────────────────────────────────────────
+# Last param in the first line/row
 [cmd_duration]
-min_time          = 2000       # show after 2s+
-format            = "[ ](dimtext)[$duration]($style) "
-style             = "bold yellow"
-show_milliseconds = false
+disabled = false
+format = "took [$duration]($style)"
+min_time = 1
 
-# ── Time ───────────────────────────────────────────────────────────────
+## SECOND LINE/ROW: Prompt
+# Somethere at the beginning
+[battery]
+charging_symbol = ""
+disabled = true
+discharging_symbol = ""
+full_symbol = ""
+
+[[battery.display]] # "bold red" style when capacity is between 0% and 15%
+disabled = false
+style = "bold red"
+threshold = 15
+
+[[battery.display]] # "bold yellow" style when capacity is between 15% and 50%
+disabled = true
+style = "bold yellow"
+threshold = 50
+
+[[battery.display]] # "bold green" style when capacity is between 50% and 80%
+disabled = true
+style = "bold green"
+threshold = 80
+
+# Prompt: optional param 1
 [time]
-disabled    = false
-format      = "[ ](dimtext)[$time]($style)"
-style       = "dimtext"
-time_format = "%H:%M"
-use_12hr    = false
+disabled = true
+format = " 🕙 $time($style)\n"
+style = "bright-white"
+time_format = "%T"
 
-# ── Character (the prompt symbol) ─────────────────────────────────────
-# Cyan ❯ normally, pink ❯ on error
+# Prompt: param 2
 [character]
-success_symbol = "[❯](bold cyan)"
-error_symbol   = "[❯](bold pink)"
-vimcmd_symbol  = "[❮](bold blue)"
+error_symbol = " [×](bold red)"
+success_symbol = " [╰─λ](bold red)"
 
-# ── Line Break ─────────────────────────────────────────────────────────
-[line_break]
+# SYMBOLS
+[status]
 disabled = false
+format = '[\[$symbol$status_common_meaning$status_signal_name$status_maybe_int\]]($style)'
+map_symbol = true
+pipestatus = true
+symbol = "🔴"
 
-# ── Package version ────────────────────────────────────────────────────
+[aws]
+symbol = " "
+
+[conda]
+symbol = " "
+
+[dart]
+symbol = " "
+
+[docker_context]
+symbol = " "
+
+[elixir]
+symbol = " "
+
+[elm]
+symbol = " "
+
+[git_branch]
+symbol = " "
+
+[golang]
+symbol = " "
+
+[hg_branch]
+symbol = " "
+
+[java]
+symbol = " "
+
+[julia]
+symbol = " "
+
+[nim]
+symbol = " "
+
+[nix_shell]
+symbol = " "
+
+[nodejs]
+symbol = " "
+
 [package]
-format  = "[ ](dimtext)[$version]($style) "
-style   = "dimtext"
-disabled = false
+symbol = " "
+
+[perl]
+symbol = " "
+
+[php]
+symbol = " "
+
+[python]
+symbol = " "
+
+[ruby]
+symbol = " "
+
+[rust]
+symbol = " "
+
+[swift]
+symbol = "ﯣ "
+
+# Auto-generated by ii wallpaper theming system
+# Do not edit manually - changes will be overwritten
+# This file provides Material You colors to your Starship prompt
+
+[palettes.ii]
+primary = '#93abde'
+onPrimary = '#1c1d24'
+secondary = '#c0ade4'
+onSecondary = '#1c1d24'
+tertiary = '#97c8e5'
+onTertiary = '#1c1d24'
+surface = '#1c1d24'
+onSurface = '#cbd1ea'
+background = '#1C1D24'
+foreground = '#B2B7CD'
+black = '#1C1D24'
+red = '#CF59CF'
+green = '#59CFB3'
+yellow = '#64CF59'
+blue = '#598DCF'
+magenta = '#9859CF'
+cyan = '#59B7CF'
+white = '#B2B7CD'
+bright_black = '#60667F'
+bright_red = '#DA81DA'
+bright_green = '#81DAC5'
+bright_yellow = '#89DA81'
+bright_blue = '#81A8DA'
+bright_magenta = '#B081DA'
+bright_cyan = '#81C8DA'
+bright_white = '#CBD1EA'

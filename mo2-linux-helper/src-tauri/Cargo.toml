@@ -1,0 +1,38 @@
+[package]
+name = "mo2-linux-helper"
+version = "0.1.0"
+description = "MO2 Linux Helper — WehttamSnaps"
+authors = ["Matthew (WehttamSnaps) <github.com/Crowdrocker>"]
+license = "MIT"
+repository = "https://github.com/Crowdrocker/wehttamsnaps-dots"
+edition = "2021"
+
+[lib]
+name = "mo2_linux_helper_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[[bin]]
+name = "mo2-linux-helper"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri         = { version = "2", features = [] }
+tauri-plugin-shell    = "2"
+tauri-plugin-dialog   = "2"
+tauri-plugin-fs       = "2"
+tauri-plugin-process  = "2"
+tauri-plugin-notification = "2"
+serde         = { version = "1", features = ["derive"] }
+serde_json    = "1"
+tokio         = { version = "1", features = ["full"] }
+anyhow        = "1"
+dirs          = "5"
+which         = "6"
+url           = "2"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

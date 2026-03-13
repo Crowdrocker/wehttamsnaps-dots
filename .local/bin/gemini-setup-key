@@ -1,0 +1,23 @@
+#!/bin/bash
+CONFIG_DIR="$HOME/.config/gemini"
+mkdir -p "$CONFIG_DIR"
+
+echo "🔑 Gemini API Key Setup"
+echo "======================="
+echo ""
+echo "Get your FREE API key from: https://aistudio.google.com/app/apikey"
+echo ""
+read -sp "Enter your Gemini API key: " api_key
+echo ""
+
+echo "$api_key" > "$CONFIG_DIR/api_key"
+chmod 600 "$CONFIG_DIR/api_key"
+
+echo "✅ API key saved!"
+echo "🧪 Testing connection..."
+
+if ~/.local/bin/gemini "Say 'Systems online' like JARVIS" >/dev/null 2>&1; then
+    echo "✅ Gemini CLI is ready!"
+else
+    echo "❌ Connection failed. Check your API key."
+fi
