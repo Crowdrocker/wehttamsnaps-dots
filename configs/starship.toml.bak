@@ -1,0 +1,203 @@
+# ═══════════════════════════════════════════════════════════════════════
+#   WehttamSnaps Starship Prompt — Powerline Cyberpunk
+#   github.com/Crowdrocker  |  twitch.tv/WehttamSnaps
+#
+#   Install: cp starship.toml ~/.config/starship.toml
+#   Requires: starship, Fira Code (Nerd Font variant for icons)
+#
+#   If icons show as boxes: install ttf-firacode-nerd from AUR
+#   yay -S ttf-firacode-nerd
+#   Then set Ghostty font to: FiraCode Nerd Font
+# ═══════════════════════════════════════════════════════════════════════
+
+# ── Format — left to right powerline segments ────────────────────────────
+format = """
+[](fg:#06060f)\
+$os\
+$username\
+[](bg:#0a0a1c fg:#06060f)\
+$directory\
+[](bg:#0e0e24 fg:#0a0a1c)\
+$git_branch\
+$git_status\
+[](bg:#141428 fg:#0e0e24)\
+$python\
+$nodejs\
+$rust\
+$golang\
+[](bg:#1a1a38 fg:#141428)\
+$cmd_duration\
+[](bg:none fg:#1a1a38)\
+$fill\
+$custom\
+$status\
+$line_break\
+$character"""
+
+# ── Right side fill (pushes status to far right) ─────────────────────────
+[fill]
+symbol = " "
+
+# ── OS icon ──────────────────────────────────────────────────────────────
+[os]
+format = "[$symbol ]($style)"
+style = "bg:#06060f fg:#3b82ff bold"
+disabled = false
+
+[os.symbols]
+Arch = " "
+Linux = " "
+
+# ── Username ─────────────────────────────────────────────────────────────
+[username]
+format = "[ $user ]($style)"
+style_user = "bg:#06060f fg:#00ffd1 bold"
+style_root = "bg:#06060f fg:#ff1744 bold"
+show_always = true
+
+# ── Directory ────────────────────────────────────────────────────────────
+[directory]
+format = "[ 󰉋 $path ]($style)[$read_only]($read_only_style)"
+style = "bg:#0a0a1c fg:#c8d0e8 bold"
+read_only = "  "
+read_only_style = "bg:#0a0a1c fg:#ff1744"
+truncation_length = 3
+truncate_to_repo = true
+home_symbol = "~"
+
+[directory.substitutions]
+"~/.config/wehttamsnaps" = " cfg"
+"~/Pictures/Screenshots" = " shots"
+"/run/media/wehttamsnaps/LINUXDRIVE/SteamLibrary" = "󰓓 steam"
+"/run/media/wehttamsnaps/LINUXDRIVE/Modlist_Packs" = "󰮄 mods"
+"/usr/share/wehttamsnaps" = " ws"
+
+# ── Git branch ───────────────────────────────────────────────────────────
+[git_branch]
+format = "[ $symbol$branch ]($style)"
+symbol = " "
+style = "bg:#0e0e24 fg:#ff5af1 bold"
+truncation_length = 20
+truncation_symbol = "…"
+
+# ── Git status ───────────────────────────────────────────────────────────
+[git_status]
+format = "[$all_status$ahead_behind ]($style)"
+style = "bg:#0e0e24 fg:#ff5af1"
+conflicted = "⚡"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked = "?${count}"
+stashed = " "
+modified = "!${count}"
+staged = "+${count}"
+renamed = "»${count}"
+deleted = "✘${count}"
+
+# ── Python ───────────────────────────────────────────────────────────────
+[python]
+format = "[ $symbol$version ]($style)"
+symbol = " "
+style = "bg:#141428 fg:#ffab00"
+detect_extensions = ["py"]
+detect_files = ["requirements.txt", "pyproject.toml", "setup.py", ".python-version"]
+
+# ── Node.js ──────────────────────────────────────────────────────────────
+[nodejs]
+format = "[ $symbol$version ]($style)"
+symbol = " "
+style = "bg:#141428 fg:#00e676"
+detect_extensions = ["js", "ts", "mjs"]
+detect_files = ["package.json", ".nvmrc"]
+
+# ── Rust ─────────────────────────────────────────────────────────────────
+[rust]
+format = "[ $symbol$version ]($style)"
+symbol = " "
+style = "bg:#141428 fg:#ff6b1a"
+detect_extensions = ["rs"]
+detect_files = ["Cargo.toml"]
+
+# ── Go ───────────────────────────────────────────────────────────────────
+[golang]
+format = "[ $symbol$version ]($style)"
+symbol = " "
+style = "bg:#141428 fg:#64ffda"
+detect_extensions = ["go"]
+detect_files = ["go.mod"]
+
+# ── Command duration ─────────────────────────────────────────────────────
+# Only shows when a command takes longer than 2 seconds
+[cmd_duration]
+format = "[ 󱦟 $duration ]($style)"
+style = "bg:#1a1a38 fg:#ffab00"
+min_time = 2_000
+show_milliseconds = false
+
+# ── Gaming mode indicator (custom module) ────────────────────────────────
+# Shows  GAMING when ~/.cache/wehttamsnaps/gaming-mode.active exists
+[custom.gaming]
+command = "echo ' GAMING'"
+when = "test -f $HOME/.cache/wehttamsnaps/gaming-mode.active"
+format = "[$output ]($style)"
+style = "fg:#ff6b1a bold"
+description = "Gaming mode active indicator"
+
+# ── Exit / status ────────────────────────────────────────────────────────
+[status]
+format = "[$symbol$status ]($style)"
+symbol = " ✘ "
+success_symbol = ""
+not_executable_symbol = " "
+not_found_symbol = "󰍉 "
+sigint_symbol = " "
+signal_symbol = "⚡"
+style = "fg:#ff1744 bold"
+map_symbol = true
+disabled = false
+pipestatus = false
+
+# ── Prompt character ─────────────────────────────────────────────────────
+[character]
+success_symbol = "[❯](fg:#00ffd1 bold)"
+error_symbol   = "[❯](fg:#ff1744 bold)"
+vimcmd_symbol  = "[❮](fg:#ff5af1 bold)"
+
+# ── Line break ───────────────────────────────────────────────────────────
+[line_break]
+disabled = false
+
+# ── Modules to disable (keep prompt fast) ────────────────────────────────
+[package]
+disabled = true
+
+[docker_context]
+disabled = true
+
+[aws]
+disabled = true
+
+[gcloud]
+disabled = true
+
+[azure]
+disabled = true
+
+[terraform]
+disabled = true
+
+[java]
+disabled = true
+
+[kotlin]
+disabled = true
+
+[ruby]
+disabled = true
+
+[php]
+disabled = true
+
+[swift]
+disabled = true

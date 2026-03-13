@@ -63,9 +63,6 @@ window {
     border-radius:      10px;
     padding:            0;
 
-    /* Subtle cyan drop shadow effect via outline */
-    outline:            0px solid @ws-cyan-dim;
-    outline-offset:     2px;
 }
 
 /* ════════════════════════════════════════════════════════════════════
@@ -115,7 +112,6 @@ entry {
     padding:            14px 12px 14px 0px;
     font:               "JetBrainsMono Nerd Font 11";
     cursor:             text;
-    blink:              true;
 }
 
 num-filtered-rows {
@@ -251,7 +247,7 @@ element-text {
     vertical-align:     0.5;
     horizontal-align:   0;
     cursor:             inherit;
-    highlight:          bold @ws-cyan;
+    highlight:          bold #00ffd1;
 }
 
 /* ════════════════════════════════════════════════════════════════════

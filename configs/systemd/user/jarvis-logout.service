@@ -1,0 +1,12 @@
+[Unit]
+Description=J.A.R.V.I.S. Shutdown Greeting
+DefaultDependencies=no
+Before=shutdown.target reboot.target halt.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/mpv --no-video /usr/share/wehttamsnaps/sounds/jarvis/jarvis-shutdown.mp3
+RemainAfterExit=yes
+
+[Install]
+WantedBy=halt.target reboot.target shutdown.target

@@ -1,0 +1,423 @@
+#!/bin/bash
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  jarvis — WehttamSnaps J.A.R.V.I.S. Voice Assistant            ║
+# ║  Natural language command processing with voice feedback        ║
+# ║  github.com/Crowdrocker  |  twitch.tv/WehttamSnaps              ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+set -euo pipefail
+
+# ════════════════════════════════════════════════════════════════════
+#  CONFIGURATION
+# ════════════════════════════════════════════════════════════════════
+
+SOUND_SYSTEM="/usr/local/bin/sound-system"
+VOICE_BASE="/usr/share/wehttamsnaps/sounds/jarvis"
+CACHE_DIR="$HOME/.cache/wehttamsnaps"
+VOICE_LOG="$CACHE_DIR/jarvis-commands.log"
+
+mkdir -p "$CACHE_DIR"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+# ════════════════════════════════════════════════════════════════════
+#  WORKSPACE MAP (matches 07-workspaces.conf)
+#  1:BROWSER  2:TERM  3:GAMING  4:STREAM  5:PHOTO
+#  6:MEDIA    7:COMMS 8:MUSIC   9:FILES  10:SYS
+# ════════════════════════════════════════════════════════════════════
+
+# ════════════════════════════════════════════════════════════════════
+#  VOICE RESPONSE
+# ════════════════════════════════════════════════════════════════════
+
+jarvis_speak() {
+    local response_file="$1"
+    local fallback_message="${2:-}"
+
+    if [[ -f "$VOICE_BASE/$response_file.mp3" ]]; then
+        paplay "$VOICE_BASE/$response_file.mp3" &>/dev/null &
+    elif [[ -n "$fallback_message" ]]; then
+        notify-send "J.A.R.V.I.S." "$fallback_message" -i audio-speakers -t 3000
+    fi
+}
+
+log_command() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $*" >> "$VOICE_LOG"
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  APPLICATION LAUNCHER
+# ════════════════════════════════════════════════════════════════════
+
+launch_application() {
+    local app="$1"
+    case "$app" in
+        firefox|browser)
+            jarvis_speak "launching-firefox" "Launching Firefox, sir"
+            GDK_BACKEND=wayland firefox & ;;
+        brave)
+            jarvis_speak "launching-firefox" "Launching Brave, sir"
+            GDK_BACKEND=wayland brave & ;;
+        steam)
+            jarvis_speak "steam-launch" "Launching Steam"
+            $SOUND_SYSTEM steam-launch
+            GDK_BACKEND=wayland steam & ;;
+        discord)
+            jarvis_speak "launching-discord" "Opening Discord"
+            discord & ;;
+        spotify|music)
+            jarvis_speak "launching-spotify" "Opening Spotify"
+            spotify & ;;
+        kate|editor)
+            jarvis_speak "launching-editor" "Opening Kate"
+            kate & ;;
+        ghostty|terminal)
+            jarvis_speak "opening-terminal" "Opening terminal"
+            ghostty & ;;
+        thunar|files|filemanager)
+            jarvis_speak "opening-files" "Opening file manager"
+            thunar & ;;
+        dolphin)
+            jarvis_speak "opening-files" "Opening Dolphin"
+            dolphin & ;;
+        gimp)
+            jarvis_speak "launching-gimp" "Launching GIMP"
+            gimp & ;;
+        darktable)
+            jarvis_speak "launching-gimp" "Launching Darktable"
+            darktable & ;;
+        obs)
+            jarvis_speak "launching-obs" "Launching OBS Studio"
+            obs & ;;
+        *)
+            jarvis_speak "app-not-found" "Application not recognised, sir"
+            notify-send "J.A.R.V.I.S." "Unknown application: $app" -i dialog-error -t 3000
+            return 1 ;;
+    esac
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  WINDOW MANAGEMENT  (SwayFX / swaymsg)
+# ════════════════════════════════════════════════════════════════════
+
+manage_window() {
+    local action="$1"
+    case "$action" in
+        close)
+            jarvis_speak "closing-window" "Closing window"
+            swaymsg kill
+            $SOUND_SYSTEM window-close ;;
+        maximize|fullscreen)
+            jarvis_speak "window-fullscreen" "Fullscreen mode"
+            swaymsg fullscreen toggle ;;
+        float)
+            jarvis_speak "window-float" "Setting window to float"
+            swaymsg floating toggle ;;
+        center)
+            jarvis_speak "window-center" "Centering window"
+            swaymsg move position center ;;
+        tile)
+            jarvis_speak "window-tile" "Tiling window"
+            swaymsg floating disable ;;
+        *)
+            jarvis_speak "command-unknown" "I don't understand that window command" ;;
+    esac
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  WORKSPACE MANAGEMENT  (SwayFX / swaymsg)
+# ════════════════════════════════════════════════════════════════════
+
+manage_workspace() {
+    local target="$1"
+
+    if [[ "$target" =~ ^[0-9]+$ ]]; then
+        jarvis_speak "workspace-switch" "Switching to workspace $target"
+        swaymsg workspace number "$target"
+        $SOUND_SYSTEM workspace "$target"
+    else
+        case "$target" in
+            browser)
+                swaymsg workspace "1:BROWSER"
+                $SOUND_SYSTEM workspace 1 ;;
+            term|terminal|dev)
+                swaymsg workspace "2:TERM"
+                $SOUND_SYSTEM workspace 2 ;;
+            gaming|games)
+                jarvis_speak "workspace-switch" "Switching to gaming workspace"
+                swaymsg workspace "3:GAMING"
+                $SOUND_SYSTEM workspace 3 ;;
+            stream|streaming|obs)
+                swaymsg workspace "4:STREAM"
+                $SOUND_SYSTEM workspace 4 ;;
+            photo|photography|darkroom)
+                jarvis_speak "workspace-switch" "Switching to photography workspace"
+                swaymsg workspace "5:PHOTO"
+                $SOUND_SYSTEM workspace 5 ;;
+            media|video)
+                swaymsg workspace "6:MEDIA"
+                $SOUND_SYSTEM workspace 6 ;;
+            comms|discord)
+                swaymsg workspace "7:COMMS"
+                $SOUND_SYSTEM workspace 7 ;;
+            music|audio)
+                swaymsg workspace "8:MUSIC"
+                $SOUND_SYSTEM workspace 8 ;;
+            files)
+                swaymsg workspace "9:FILES"
+                $SOUND_SYSTEM workspace 9 ;;
+            sys|system)
+                swaymsg workspace "10:SYS"
+                $SOUND_SYSTEM workspace 10 ;;
+            next)
+                jarvis_speak "workspace-next" "Next workspace"
+                swaymsg workspace next ;;
+            prev|previous)
+                jarvis_speak "workspace-previous" "Previous workspace"
+                swaymsg workspace prev ;;
+            *)
+                jarvis_speak "command-unknown" "Workspace not recognised" ;;
+        esac
+    fi
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  SYSTEM COMMANDS
+# ════════════════════════════════════════════════════════════════════
+
+system_control() {
+    local action="$1"
+    case "$action" in
+        screenshot|capture)
+            jarvis_speak "screenshot" "Screenshot captured"
+            mkdir -p "$HOME/Pictures/Screenshots"
+            grimblast copy area \
+                "$HOME/Pictures/Screenshots/$(date +%Y%m%d-%H%M%S).png" \
+                2>/dev/null || \
+            grim -g "$(slurp)" \
+                "$HOME/Pictures/Screenshots/$(date +%Y%m%d-%H%M%S).png"
+            $SOUND_SYSTEM screenshot ;;
+        lock)
+            jarvis_speak "locking-screen" "Locking screen, sir"
+            sleep 0.5
+            qs ipc call noctalia-shell lock 2>/dev/null || swaylock ;;
+        reload|refresh)
+            jarvis_speak "notification" "Reloading configuration"
+            swaymsg reload
+            $SOUND_SYSTEM config-reload ;;
+        *)
+            jarvis_speak "command-unknown" "System command not recognised" ;;
+    esac
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  AUDIO COMMANDS
+# ════════════════════════════════════════════════════════════════════
+
+audio_control() {
+    local action="$1"
+    case "$action" in
+        mute)            $SOUND_SYSTEM mute ;;
+        unmute)          wpctl set-mute @DEFAULT_AUDIO_SINK@ 0
+                         jarvis_speak "audio-unmute" "Audio restored" ;;
+        "volume up"|louder|increase)   $SOUND_SYSTEM volume-up ;;
+        "volume down"|quieter|decrease) $SOUND_SYSTEM volume-down ;;
+        "play music"|play|resume)
+            jarvis_speak "music-play" "Playing music"
+            playerctl play ;;
+        "pause music"|pause|stop)
+            jarvis_speak "music-pause" "Pausing music"
+            playerctl pause ;;
+        "next track"|next|skip)
+            jarvis_speak "music-next" "Next track"
+            playerctl next ;;
+        "previous track"|previous|back)
+            jarvis_speak "music-previous" "Previous track"
+            playerctl previous ;;
+    esac
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  WEB SEARCH
+# ════════════════════════════════════════════════════════════════════
+
+web_search() {
+    local engine="$1"; shift
+    local query="$*"
+    case "$engine" in
+        google)
+            jarvis_speak "searching-google" "Searching Google"
+            GDK_BACKEND=wayland brave "https://www.google.com/search?q=${query// /+}" & ;;
+        youtube)
+            jarvis_speak "searching-youtube" "Searching YouTube"
+            GDK_BACKEND=wayland brave "https://www.youtube.com/results?search_query=${query// /+}" & ;;
+        github)
+            jarvis_speak "searching-github" "Searching GitHub"
+            GDK_BACKEND=wayland brave "https://github.com/search?q=${query// /+}" & ;;
+        *)
+            jarvis_speak "searching-google" "Searching for $engine $query"
+            GDK_BACKEND=wayland brave "https://www.google.com/search?q=${engine}+${query// /+}" & ;;
+    esac
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  PHOTOGRAPHY MODE
+# ════════════════════════════════════════════════════════════════════
+
+start_photography() {
+    jarvis_speak "photo-mode" "Entering photography mode, sir"
+    swaymsg workspace "5:PHOTO"
+    $SOUND_SYSTEM workspace 5
+    command -v darktable &>/dev/null && darktable &
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  GAMING MODE
+# ════════════════════════════════════════════════════════════════════
+
+toggle_gaming_mode() {
+    ~/.config/sway/scripts/toggle-gamemode.sh
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  SYSTEM STATUS
+# ════════════════════════════════════════════════════════════════════
+
+system_status() {
+    jarvis_speak "status-report" "Generating status report, sir"
+    local cpu_usage; cpu_usage=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1 || echo "N/A")
+    local mem_usage; mem_usage=$(free | awk '/Mem/ {printf "%.0f", $3/$2*100}')
+    local sound_mode; sound_mode=$($SOUND_SYSTEM status 2>/dev/null | grep "Saved Mode:" | awk '{print $NF}' || echo "jarvis")
+    notify-send "J.A.R.V.I.S. Status" \
+        "CPU: ${cpu_usage}%\nMemory: ${mem_usage}%\nSound: ${sound_mode}" \
+        -i utilities-system-monitor -t 5000
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  NATURAL LANGUAGE PARSER
+# ════════════════════════════════════════════════════════════════════
+
+parse_command() {
+    local input="$*"
+    local cmd="${input,,}"
+    log_command "$input"
+
+    # Strip common prefixes
+    cmd="${cmd#jarvis }"; cmd="${cmd#hey jarvis }"; cmd="${cmd#ok jarvis }"
+
+    if   [[ "$cmd" =~ ^(open|launch|start|run)[[:space:]](.+)$ ]];                    then launch_application "${BASH_REMATCH[2]}"
+    elif [[ "$cmd" =~ ^(close|maximize|fullscreen|tile|float|center)[[:space:]]?(window|this)?$ ]]; then manage_window "${BASH_REMATCH[1]}"
+    elif [[ "$cmd" =~ ^(go to|switch to|workspace)[[:space:]](.+)$ ]];                then manage_workspace "${BASH_REMATCH[2]}"
+    elif [[ "$cmd" =~ ^search[[:space:]](google|youtube|github)?[[:space:]]*for[[:space:]](.+)$ ]]; then web_search "${BASH_REMATCH[1]:-google}" "${BASH_REMATCH[2]}"
+    elif [[ "$cmd" =~ ^(mute|unmute|play|pause|stop|next|previous|volume[[:space:]]up|volume[[:space:]]down)$ ]]; then audio_control "$cmd"
+    elif [[ "$cmd" =~ ^(screenshot|capture|lock|reload|refresh)$ ]];                  then system_control "${BASH_REMATCH[1]}"
+    elif [[ "$cmd" =~ ^(gaming mode|enable gaming|disable gaming|toggle gaming)$ ]];  then toggle_gaming_mode
+    elif [[ "$cmd" =~ ^(photography|photo mode|darkroom)$ ]];                         then start_photography
+    elif [[ "$cmd" =~ ^(status|system status|report|how are you)$ ]];                 then system_status
+    elif [[ "$cmd" =~ ^(hello|hi|hey|good morning|good evening)$ ]];                  then jarvis_speak "greeting" "Hello, sir. How may I assist you?"
+    elif [[ "$cmd" =~ ^(thank you|thanks|good job)$ ]];                               then jarvis_speak "you-welcome" "My pleasure, sir"
+    else
+        jarvis_speak "command-unknown" "I'm sorry sir, I don't understand that command"
+        echo -e "${YELLOW}❓${NC} Unknown: $input"
+        echo "Try: jarvis help"
+    fi
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  INTERACTIVE MODE
+# ════════════════════════════════════════════════════════════════════
+
+interactive_mode() {
+    jarvis_speak "startup" "J.A.R.V.I.S. online. Awaiting your command, sir"
+    echo -e "${CYAN}╔════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║   J.A.R.V.I.S. Voice Assistant v2.0   ║${NC}"
+    echo -e "${CYAN}║   WehttamSnaps · SwayFX Edition        ║${NC}"
+    echo -e "${CYAN}╚════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${YELLOW}Type commands or 'exit' to quit | 'help' for examples${NC}"
+    echo ""
+    while true; do
+        echo -ne "${GREEN}Matthew ❯${NC} "
+        read -r command
+        case "$command" in
+            exit|quit) jarvis_speak "shutdown" "Goodbye, sir"; break ;;
+            help)      show_examples ;;
+            "")        ;;
+            *)         parse_command "$command"; echo "" ;;
+        esac
+    done
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  HELP
+# ════════════════════════════════════════════════════════════════════
+
+show_examples() {
+    cat << EOF
+
+${CYAN}J.A.R.V.I.S. Commands:${NC}
+
+${YELLOW}Apps:${NC}           open brave | launch steam | start spotify
+${YELLOW}Windows:${NC}        close window | fullscreen | float | center
+${YELLOW}Workspaces:${NC}     go to gaming | workspace 3 | switch to photo
+${YELLOW}Search:${NC}         search google for linux tips
+${YELLOW}Audio:${NC}          mute | volume up | play music | next track
+${YELLOW}System:${NC}         screenshot | lock | reload | status
+${YELLOW}Modes:${NC}          gaming mode | photography
+
+EOF
+}
+
+show_help() {
+    cat << EOF
+${CYAN}WehttamSnaps J.A.R.V.I.S. v2.0${NC}
+
+${YELLOW}Usage:${NC}
+  jarvis [command]          Execute command
+  jarvis interactive        Interactive shell
+  jarvis help               This help
+  jarvis examples           Command examples
+
+${YELLOW}Keybinds (from 05-keybinds.conf):${NC}
+  Super + J   → jarvis-menu (Rofi visual menu)
+  Super + H   → keyhints cheat sheet
+  Super + X   → power menu
+
+${YELLOW}SwayFX integration:${NC}
+  Uses swaymsg for all window/workspace commands
+  Calls Noctalia IPC for lock screen
+  Calls sound-system for all audio feedback
+EOF
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  ROFI MODE INTEGRATION
+# ════════════════════════════════════════════════════════════════════
+
+rofi_mode() {
+    if [[ "${ROFI_RETV:-0}" == "0" ]]; then
+        printf '%s\n' \
+            "open brave" "launch steam" "close window" \
+            "gaming mode" "screenshot" "lock" \
+            "search google for" "status"
+    else
+        parse_command "$@"
+    fi
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  MAIN
+# ════════════════════════════════════════════════════════════════════
+
+case "${1:-help}" in
+    interactive|i) interactive_mode ;;
+    examples|ex)   show_examples ;;
+    rofi)          shift; rofi_mode "$@" ;;
+    help|--help|-h) show_help ;;
+    *)             parse_command "$@" ;;
+esac

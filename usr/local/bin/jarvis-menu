@@ -1,0 +1,297 @@
+#!/bin/bash
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  jarvis-menu — WehttamSnaps J.A.R.V.I.S. Rofi Visual Menu      ║
+# ║  Graphical command interface with categories                    ║
+# ║  github.com/Crowdrocker  |  twitch.tv/WehttamSnaps              ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+set -euo pipefail
+
+# ════════════════════════════════════════════════════════════════════
+#  CONFIGURATION
+# ════════════════════════════════════════════════════════════════════
+
+JARVIS_CMD="/usr/local/bin/jarvis"
+THEME="$HOME/.config/rofi/themes/wehttamsnaps.rasi"
+
+# Wayland backend required for rofi on SwayFX
+ROFI="GDK_BACKEND=wayland rofi"
+
+# Verify rofi is available
+if ! command -v rofi &>/dev/null; then
+    notify-send "J.A.R.V.I.S. Error" "rofi is not installed" -i dialog-error -t 3000
+    exit 1
+fi
+
+# ════════════════════════════════════════════════════════════════════
+#  MENUS
+# ════════════════════════════════════════════════════════════════════
+
+MAIN_MENU=(
+    "🚀 Launch App|apps"
+    "🪟 Window Control|windows"
+    "🎯 Workspaces|workspaces"
+    "🔊 Audio Control|audio"
+    "🔍 Web Search|search"
+    "⚙️  System|system"
+    "🎮 Gaming Mode|gaming"
+    "📸 Photography Mode|photo"
+    "💬 Talk to J.A.R.V.I.S.|talk"
+    "❌ Cancel|cancel"
+)
+
+APP_MENU=(
+    "  Brave Browser|brave"
+    "  Ghostty Terminal|ghostty"
+    "  Steam|steam"
+    "  Discord|discord"
+    "  Spotify|spotify"
+    "  Kate Editor|kate"
+    "  Thunar Files|thunar"
+    "  Darktable|darktable"
+    "  GIMP|gimp"
+    "  OBS Studio|obs"
+    "⬅️  Back|back"
+)
+
+WINDOW_MENU=(
+    "✕  Close Window|close"
+    "⬜ Maximize / Fullscreen|fullscreen"
+    "🎈 Float Toggle|float"
+    "🎯 Center Window|center"
+    "🔲 Tile (disable float)|tile"
+    "⬅️  Back|back"
+)
+
+# Updated workspace menu matching 07-workspaces.conf names
+WORKSPACE_MENU=(
+    "1  BROWSER|1"
+    "2  TERM|2"
+    "3  GAMING|3"
+    "4  STREAM|4"
+    "5  PHOTO|5"
+    "6  MEDIA|6"
+    "7  COMMS|7"
+    "8  MUSIC|8"
+    "9  FILES|9"
+    "10  SYS|10"
+    "➡️  Next|next"
+    "⬅️  Previous|previous"
+    "⬅️  Back|back"
+)
+
+AUDIO_MENU=(
+    "🔇 Mute / Unmute|mute"
+    "🔊 Volume Up|volume-up"
+    "🔉 Volume Down|volume-down"
+    "🎤 Mic Mute Toggle|mic-mute"
+    "▶️  Play Music|play music"
+    "⏸️  Pause Music|pause music"
+    "⏭️  Next Track|next track"
+    "⏮️  Previous Track|previous track"
+    "⬅️  Back|back"
+)
+
+SEARCH_MENU=(
+    "  Google|google"
+    "  YouTube|youtube"
+    "  GitHub|github"
+    "⬅️  Back|back"
+)
+
+SYSTEM_MENU=(
+    "  Screenshot (region)|screenshot"
+    "🔒 Lock Screen|lock"
+    "🔄 Reload SwayFX Config|reload"
+    "📊 System Status|status"
+    "⬅️  Back|back"
+)
+
+# ════════════════════════════════════════════════════════════════════
+#  ROFI HELPERS
+# ════════════════════════════════════════════════════════════════════
+
+show_menu() {
+    local prompt="$1"; shift
+    local options=("$@")
+    local display=()
+    for o in "${options[@]}"; do display+=("${o%%|*}"); done
+
+    printf '%s\n' "${display[@]}" | \
+        GDK_BACKEND=wayland rofi \
+            -dmenu \
+            -i \
+            -p "$prompt" \
+            -theme "$THEME" \
+            -no-custom \
+        || true
+}
+
+text_input() {
+    local prompt="$1"
+    GDK_BACKEND=wayland rofi \
+        -dmenu \
+        -p "$prompt" \
+        -theme "$THEME" \
+        -theme-str 'window {width: 600px;} listview {lines: 0;}' \
+        -lines 0 \
+        || true
+}
+
+# Map display label back to command
+get_cmd() {
+    local choice="$1"; shift
+    local options=("$@")
+    for item in "${options[@]}"; do
+        [[ "${item%%|*}" == "$choice" ]] && echo "${item##*|}" && return
+    done
+    echo ""
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  MENU HANDLERS
+# ════════════════════════════════════════════════════════════════════
+
+handle_apps() {
+    local choice; choice=$(show_menu "J.A.R.V.I.S. // Launch" "${APP_MENU[@]}")
+    [[ -z "$choice" ]] && return
+    local cmd; cmd=$(get_cmd "$choice" "${APP_MENU[@]}")
+    [[ "$cmd" == "back" ]] && show_main_menu && return
+    $JARVIS_CMD open "$cmd"
+}
+
+handle_windows() {
+    local choice; choice=$(show_menu "J.A.R.V.I.S. // Window" "${WINDOW_MENU[@]}")
+    [[ -z "$choice" ]] && return
+    local cmd; cmd=$(get_cmd "$choice" "${WINDOW_MENU[@]}")
+    [[ "$cmd" == "back" ]] && show_main_menu && return
+    $JARVIS_CMD "$cmd" window
+}
+
+handle_workspaces() {
+    local choice; choice=$(show_menu "J.A.R.V.I.S. // Workspace" "${WORKSPACE_MENU[@]}")
+    [[ -z "$choice" ]] && return
+    local cmd; cmd=$(get_cmd "$choice" "${WORKSPACE_MENU[@]}")
+    case "$cmd" in
+        back)               show_main_menu ;;
+        next|previous)      $JARVIS_CMD workspace "$cmd" ;;
+        [0-9]|10)           $JARVIS_CMD go to workspace "$cmd" ;;
+    esac
+}
+
+handle_audio() {
+    local choice; choice=$(show_menu "J.A.R.V.I.S. // Audio" "${AUDIO_MENU[@]}")
+    [[ -z "$choice" ]] && return
+    local cmd; cmd=$(get_cmd "$choice" "${AUDIO_MENU[@]}")
+    [[ "$cmd" == "back" ]] && show_main_menu && return
+    case "$cmd" in
+        volume-up)   /usr/local/bin/sound-system volume-up ;;
+        volume-down) /usr/local/bin/sound-system volume-down ;;
+        mic-mute)    /usr/local/bin/sound-system mic-mute ;;
+        *)           $JARVIS_CMD "$cmd" ;;
+    esac
+}
+
+handle_search() {
+    local choice; choice=$(show_menu "J.A.R.V.I.S. // Search" "${SEARCH_MENU[@]}")
+    [[ -z "$choice" ]] && return
+    local engine; engine=$(get_cmd "$choice" "${SEARCH_MENU[@]}")
+    [[ "$engine" == "back" ]] && show_main_menu && return
+    local query; query=$(text_input "Search $engine for:")
+    [[ -n "$query" ]] && $JARVIS_CMD search "$engine" for "$query"
+}
+
+handle_system() {
+    local choice; choice=$(show_menu "J.A.R.V.I.S. // System" "${SYSTEM_MENU[@]}")
+    [[ -z "$choice" ]] && return
+    local cmd; cmd=$(get_cmd "$choice" "${SYSTEM_MENU[@]}")
+    [[ "$cmd" == "back" ]] && show_main_menu && return
+    $JARVIS_CMD "$cmd"
+}
+
+handle_talk() {
+    local command; command=$(text_input "J.A.R.V.I.S.,")
+    [[ -n "$command" ]] && $JARVIS_CMD "$command"
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  MAIN MENU
+# ════════════════════════════════════════════════════════════════════
+
+show_main_menu() {
+    local choice; choice=$(show_menu "J.A.R.V.I.S." "${MAIN_MENU[@]}")
+    [[ -z "$choice" ]] && exit 0
+    local cmd; cmd=$(get_cmd "$choice" "${MAIN_MENU[@]}")
+
+    case "$cmd" in
+        apps)       handle_apps ;;
+        windows)    handle_windows ;;
+        workspaces) handle_workspaces ;;
+        audio)      handle_audio ;;
+        search)     handle_search ;;
+        system)     handle_system ;;
+        gaming)     $JARVIS_CMD gaming mode ;;
+        photo)      $JARVIS_CMD photography ;;
+        talk)       handle_talk ;;
+        cancel|"")  exit 0 ;;
+    esac
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  QUICK MODES
+# ════════════════════════════════════════════════════════════════════
+
+quick_apps() {
+    local choice; choice=$(show_menu "J.A.R.V.I.S. // Launch" "${APP_MENU[@]}")
+    [[ -z "$choice" ]] && exit 0
+    local cmd; cmd=$(get_cmd "$choice" "${APP_MENU[@]}")
+    [[ "$cmd" != "back" ]] && $JARVIS_CMD open "$cmd"
+}
+
+quick_workspaces() {
+    local choice; choice=$(show_menu "J.A.R.V.I.S. // Workspace" "${WORKSPACE_MENU[@]}")
+    [[ -z "$choice" ]] && exit 0
+    local cmd; cmd=$(get_cmd "$choice" "${WORKSPACE_MENU[@]}")
+    case "$cmd" in
+        back|"")   exit 0 ;;
+        next|prev*) $JARVIS_CMD workspace "$cmd" ;;
+        *)          $JARVIS_CMD go to workspace "$cmd" ;;
+    esac
+}
+
+free_command() {
+    local command; command=$(text_input "J.A.R.V.I.S.,")
+    [[ -n "$command" ]] && $JARVIS_CMD "$command"
+}
+
+# ════════════════════════════════════════════════════════════════════
+#  MAIN
+# ════════════════════════════════════════════════════════════════════
+
+case "${1:-main}" in
+    main|menu)          show_main_menu ;;
+    apps|quick-apps)    quick_apps ;;
+    workspaces|quick-ws) quick_workspaces ;;
+    command|free)       free_command ;;
+    help|--help|-h)
+        cat << EOF
+J.A.R.V.I.S. Rofi Visual Menu
+
+Usage: jarvis-menu [mode]
+
+Modes:
+  main        Full menu with categories (default)
+  apps        Quick app launcher
+  workspaces  Quick workspace switcher
+  command     Free-form command input
+
+Keybinds (05-keybinds.conf):
+  Super + J   → jarvis-menu main
+  Super + D   → rofi -show drun (app launcher)
+EOF
+        ;;
+    *)
+        echo "Unknown mode: $1"
+        echo "Run 'jarvis-menu help'"
+        exit 1 ;;
+esac

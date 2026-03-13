@@ -1,0 +1,168 @@
+# ═══════════════════════════════════════════════════════════════════════
+#   WehttamSnaps Dunst Config — Cyberpunk Dark Notifications
+#   github.com/Crowdrocker  |  twitch.tv/WehttamSnaps
+#
+#   Install: cp dunstrc ~/.config/dunst/dunstrc
+#   Reload:  pkill dunst && dunst &
+# ═══════════════════════════════════════════════════════════════════════
+
+[global]
+    # ── Position ────────────────────────────────────────────────────────
+    origin          = top-right
+    offset          = 12x40
+    # 40px down so it clears the i3bar (26px height + padding)
+
+    # ── Display ─────────────────────────────────────────────────────────
+    monitor         = 0
+    follow          = none
+    width           = 340
+    height          = 120
+    gap_size        = 6
+    padding         = 12
+    horizontal_padding = 14
+    text_icon_padding = 10
+
+    # ── Appearance ──────────────────────────────────────────────────────
+    frame_width     = 1
+    frame_color     = "#1a1a3a"
+    corner_radius   = 2
+    transparency    = 8
+
+    # ── Typography ──────────────────────────────────────────────────────
+    font            = JetBrains Mono 10
+    line_height     = 2
+    markup          = full
+    format          = "<b>%s</b>\n%b"
+    alignment       = left
+    vertical_alignment = center
+    word_wrap       = yes
+    ellipsize       = middle
+    ignore_newline  = no
+    stack_duplicates = true
+    hide_duplicate_count = false
+
+    # ── Icons ────────────────────────────────────────────────────────────
+    icon_theme      = Papirus-Dark
+    enable_recursive_icon_lookup = true
+    icon_position   = left
+    min_icon_size   = 32
+    max_icon_size   = 48
+
+    # ── Timeouts (ms) ────────────────────────────────────────────────────
+    show_age_threshold  = 60
+    idle_threshold      = 120
+
+    # ── Behaviour ────────────────────────────────────────────────────────
+    sort             = yes
+    indicate_hidden  = yes
+    sticky_history   = yes
+    history_length   = 20
+    show_indicators  = yes
+    mouse_left_click  = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
+
+    # ── Progress bar (used by volume/brightness notifications) ───────────
+    progress_bar                  = true
+    progress_bar_height           = 6
+    progress_bar_frame_width      = 1
+    progress_bar_min_width        = 200
+    progress_bar_max_width        = 300
+    progress_bar_corner_radius    = 1
+
+    # ── Misc ─────────────────────────────────────────────────────────────
+    dmenu            = /usr/bin/rofi -dmenu -theme ~/.config/rofi/themes/wehttamsnaps.rasi
+    browser          = brave
+    always_run_script = true
+    title            = Dunst
+    class            = Dunst
+
+# ═══════════════════════════════════════════════════════════════════════
+#   URGENCY LEVELS
+#   background / foreground / frame_color / timeout
+# ═══════════════════════════════════════════════════════════════════════
+
+[urgency_low]
+    # Subtle — dim cyan, for things like media info, workspace sounds
+    background  = "#06060f"
+    foreground  = "#8890aa"
+    frame_color = "#1a1a3a"
+    timeout     = 3
+    default_icon = dialog-information
+
+[urgency_normal]
+    # Standard — clean dark with cyan frame
+    background  = "#0a0a1c"
+    foreground  = "#c8d0e8"
+    frame_color = "#00ffd1"
+    timeout     = 5
+    default_icon = dialog-information
+
+[urgency_critical]
+    # Alert — red frame, stays until dismissed
+    background  = "#1a0608"
+    foreground  = "#c8d0e8"
+    frame_color = "#ff1744"
+    timeout     = 0
+    default_icon = dialog-error
+
+# ═══════════════════════════════════════════════════════════════════════
+#   APP-SPECIFIC RULES
+# ═══════════════════════════════════════════════════════════════════════
+
+[gaming_mode]
+    # Gaming mode toggle notifications get orange frame
+    summary     = "*iDroid*"
+    background  = "#0e0e0a"
+    foreground  = "#c8d0e8"
+    frame_color = "#ff6b1a"
+    timeout     = 4
+
+[jarvis_online]
+    # JARVIS restoration gets cyan
+    summary     = "*J.A.R.V.I.S.*"
+    background  = "#060f0e"
+    foreground  = "#c8d0e8"
+    frame_color = "#00ffd1"
+    timeout     = 4
+
+[screenshot]
+    # Screenshot notifications — blue frame, short timeout
+    summary     = "*Screenshot*"
+    background  = "#060a0f"
+    foreground  = "#c8d0e8"
+    frame_color = "#3b82ff"
+    timeout     = 2
+
+[volume]
+    # Volume change — low urgency, very short
+    summary     = "*Volume*"
+    urgency     = low
+    timeout     = 1
+
+[spotify]
+    # Spotify track changes — pink, short
+    appname     = "Spotify"
+    background  = "#0d060f"
+    foreground  = "#c8d0e8"
+    frame_color = "#ff5af1"
+    timeout     = 3
+
+[steam]
+    # Steam notifications — blue frame
+    appname     = "Steam"
+    background  = "#060a0f"
+    foreground  = "#c8d0e8"
+    frame_color = "#3b82ff"
+    timeout     = 5
+
+[discord]
+    # Discord — keep visible a bit longer
+    appname     = "discord"
+    timeout     = 8
+
+[network]
+    # Network manager — low urgency
+    appname     = "NetworkManager"
+    urgency     = low
+    timeout     = 4

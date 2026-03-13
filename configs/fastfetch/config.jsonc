@@ -1,0 +1,245 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+
+  // ╔══════════════════════════════════════════════════════════════════╗
+  // ║  fastfetch config.jsonc — WehttamSnaps Cyberpunk System Info    ║
+  // ║  ~/.config/fastfetch/config.jsonc                               ║
+  // ║  github.com/Crowdrocker  |  twitch.tv/WehttamSnaps              ║
+  // ╚══════════════════════════════════════════════════════════════════╝
+
+  "logo": {
+    "type": "file",
+    "source": "~/.config/fastfetch/ws-logo.txt",
+    "color": {
+      "1": "cyan",
+      "2": "blue",
+      "3": "magenta"
+    },
+    "padding": {
+      "top": 1,
+      "left": 1,
+      "right": 2
+    }
+  },
+
+  "display": {
+    "separator": " // ",
+    "key": {
+      "width": 14
+    },
+    "color": {
+      "title": "cyan",
+      "keys": "blue",
+      "separator": "bright_black"
+    },
+    "percent": {
+      "type": 3,
+      "colorGreen":  "cyan",
+      "colorYellow": "yellow",
+      "colorRed":    "magenta"
+    }
+  },
+
+  "modules": [
+
+    // ── Top spacer ─────────────────────────────────────────────────
+    "break",
+
+    // ── Title: user@host ───────────────────────────────────────────
+    {
+      "type": "title",
+      "format": "{#cyan}{user-name}{#bright_black}@{#blue}{host-name}",
+      "keyColor": "cyan"
+    },
+
+    // ── Separator line ─────────────────────────────────────────────
+    {
+      "type": "separator",
+      "string": "─",
+      "color": "bright_black"
+    },
+
+    // ── OS ─────────────────────────────────────────────────────────
+    {
+      "type": "os",
+      "key": "  OS",
+      "keyColor": "cyan",
+      "format": "{pretty-name} {arch}"
+    },
+
+    // ── Kernel ─────────────────────────────────────────────────────
+    {
+      "type": "kernel",
+      "key": "  Kernel",
+      "keyColor": "blue",
+      "format": "{release}"
+    },
+
+    // ── Uptime ─────────────────────────────────────────────────────
+    {
+      "type": "uptime",
+      "key": "󰅐  Uptime",
+      "keyColor": "blue"
+    },
+
+    // ── WM / Compositor ────────────────────────────────────────────
+    {
+      "type": "wm",
+      "key": "  WM",
+      "keyColor": "cyan",
+      "format": "{name}"
+    },
+
+    // ── Shell ──────────────────────────────────────────────────────
+    {
+      "type": "shell",
+      "key": "  Shell",
+      "keyColor": "blue",
+      "format": "{name} {version}"
+    },
+
+    // ── Terminal ───────────────────────────────────────────────────
+    {
+      "type": "terminal",
+      "key": "  Term",
+      "keyColor": "blue",
+      "format": "{name}"
+    },
+
+    // ── Separator ──────────────────────────────────────────────────
+    {
+      "type": "separator",
+      "string": "─",
+      "color": "bright_black"
+    },
+
+    // ── CPU ────────────────────────────────────────────────────────
+    {
+      "type": "cpu",
+      "key": "  CPU",
+      "keyColor": "cyan",
+      "format": "{name} ({logical-core-count}T) @ {freq-max:.2}GHz",
+      "showPeCoreCount": false
+    },
+
+    // ── CPU Usage ──────────────────────────────────────────────────
+    {
+      "type": "cpuusage",
+      "key": "  CPU Load",
+      "keyColor": "blue"
+    },
+
+    // ── GPU ────────────────────────────────────────────────────────
+    {
+      "type": "gpu",
+      "key": "  GPU",
+      "keyColor": "cyan",
+      "format": "{name} ({driver})",
+      "driverSpecific": true
+    },
+
+    // ── Memory ─────────────────────────────────────────────────────
+    {
+      "type": "memory",
+      "key": "  RAM",
+      "keyColor": "blue",
+      "format": "{used} / {total} ({percentage:.0}%)"
+    },
+
+    // ── Swap / ZRAM ────────────────────────────────────────────────
+    {
+      "type": "swap",
+      "key": "  Swap",
+      "keyColor": "blue",
+      "format": "{used} / {total} (ZRAM)"
+    },
+
+    // ── Separator ──────────────────────────────────────────────────
+    {
+      "type": "separator",
+      "string": "─",
+      "color": "bright_black"
+    },
+
+    // ── Disk — Boot SSD ────────────────────────────────────────────
+    {
+      "type": "disk",
+      "key": "󰋊  Boot",
+      "keyColor": "cyan",
+      "folders": "/",
+      "format": "{used} / {total} ({percentage:.0}%)"
+    },
+
+    // ── Disk — LINUXDRIVE (1TB) ────────────────────────────────────
+    {
+      "type": "disk",
+      "key": "󰋊  Storage",
+      "keyColor": "cyan",
+      "folders": "/run/media/wehttamsnaps/LINUXDRIVE",
+      "format": "{used} / {total} ({percentage:.0}%)  󰆼 LINUXDRIVE"
+    },
+
+    // ── Separator ──────────────────────────────────────────────────
+    {
+      "type": "separator",
+      "string": "─",
+      "color": "bright_black"
+    },
+
+    // ── Resolution ─────────────────────────────────────────────────
+    {
+      "type": "display",
+      "key": "󰍹  Display",
+      "keyColor": "blue",
+      "format": "{width}x{height} @ {refresh-rate:.0}Hz"
+    },
+
+    // ── Theme ──────────────────────────────────────────────────────
+    {
+      "type": "gtk",
+      "key": "  GTK",
+      "keyColor": "blue",
+      "format": "{theme} ({icons} icons)"
+    },
+
+    // ── Font ───────────────────────────────────────────────────────
+    {
+      "type": "terminalfont",
+      "key": "  Font",
+      "keyColor": "blue",
+      "format": "{name} {size}"
+    },
+
+    // ── Separator ──────────────────────────────────────────────────
+    {
+      "type": "separator",
+      "string": "─",
+      "color": "bright_black"
+    },
+
+    // ── Package count ──────────────────────────────────────────────
+    {
+      "type": "packages",
+      "key": "  Packages",
+      "keyColor": "cyan",
+      "format": "{all} (pacman: {pacman})"
+    },
+
+    // ── Locale ─────────────────────────────────────────────────────
+    {
+      "type": "locale",
+      "key": "  Locale",
+      "keyColor": "blue"
+    },
+
+    // ── Break + Color palette ──────────────────────────────────────
+    "break",
+    {
+      "type": "colors",
+      "paddingLeft": 3,
+      "symbol": "block"
+    },
+    "break"
+
+  ]
+}

@@ -1,0 +1,110 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  ~/.config/ghostty/config — WehttamSnaps Cyberpunk Terminal     ║
+# ║  github.com/Crowdrocker  |  twitch.tv/WehttamSnaps              ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+# ── Font ──────────────────────────────────────────────────────────────
+font-family            = "JetBrainsMono Nerd Font"
+font-style             = "Regular"
+font-style-bold        = "Bold"
+font-style-italic      = "Italic"
+font-style-bold-italic = "Bold Italic"
+font-size              = 13
+font-feature           = +liga
+font-feature           = +calt
+font-feature           = +ss01
+adjust-cell-width      = 0
+adjust-cell-height     = 2
+
+# ── Theme / Colors ────────────────────────────────────────────────────
+# WehttamSnaps cyberpunk palette
+# Pink   #ff5af1  Blue  #3b82ff  Cyan  #00ffd1  Dark  #0a0014
+
+background             = #080012
+foreground             = #cce8e4
+cursor-color           = #00ffd1
+cursor-text            = #080012
+cursor-style           = block
+cursor-style-blink     = true
+selection-background   = #3b82ff
+selection-foreground   = #ffffff
+
+# ── Normal colors (0-7) ───────────────────────────────────────────────
+palette = 0=#0a0014
+palette = 1=#ff5af1
+palette = 2=#00ffd1
+palette = 3=#f4c430
+palette = 4=#3b82ff
+palette = 5=#8b00ff
+palette = 6=#00ffd1
+palette = 7=#cce8e4
+
+# ── Bright colors (8-15) ─────────────────────────────────────────────
+palette = 8=#1a0030
+palette = 9=#ff80f8
+palette = 10=#60ffe8
+palette = 11=#ffd966
+palette = 12=#7eb3ff
+palette = 13=#b84dff
+palette = 14=#60ffe8
+palette = 15=#e8f8f5
+
+# ── Transparency & Blur ───────────────────────────────────────────────
+# SwayFX handles blur via layer_effects — keep alpha at ~0.93
+# so the blur behind shows through
+background-opacity     = 0.93
+
+# ── Window ────────────────────────────────────────────────────────────
+window-padding-x       = 14
+window-padding-y       = 10
+window-decoration      = none
+window-height          = 36
+window-width           = 120
+window-save-state      = always
+
+# ── Titlebar ──────────────────────────────────────────────────────────
+title                  = "J.A.R.V.I.S. Terminal"
+
+# ── Scrollback ────────────────────────────────────────────────────────
+scrollback-limit       = 10000
+
+# ── Shell ─────────────────────────────────────────────────────────────
+shell-integration      = zsh
+shell-integration-features = cursor,sudo,title
+
+# ── Mouse ─────────────────────────────────────────────────────────────
+mouse-hide-while-typing = true
+focus-follows-mouse    = false
+
+# ── Keybinds ─────────────────────────────────────────────────────────
+# New tab
+keybind = ctrl+t=new_tab
+
+# Split panes (Ghostty native)
+keybind = ctrl+shift+d=new_split:right
+keybind = ctrl+shift+e=new_split:down
+
+# Navigate splits
+keybind = ctrl+shift+h=goto_split:left
+keybind = ctrl+shift+l=goto_split:right
+keybind = ctrl+shift+k=goto_split:top
+keybind = ctrl+shift+j=goto_split:bottom
+
+# Font size
+keybind = ctrl+equal=increase_font_size:1
+keybind = ctrl+minus=decrease_font_size:1
+keybind = ctrl+zero=reset_font_size
+
+# Copy / paste
+keybind = ctrl+shift+c=copy_to_clipboard
+keybind = ctrl+shift+v=paste_from_clipboard
+
+# Close
+keybind = ctrl+shift+w=close_surface
+
+# ── Misc ──────────────────────────────────────────────────────────────
+clipboard-read         = allow
+clipboard-write        = allow
+copy-on-select         = true
+confirm-close-surface  = false
+quit-after-last-window-closed = true
