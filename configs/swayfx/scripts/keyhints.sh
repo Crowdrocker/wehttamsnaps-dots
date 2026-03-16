@@ -16,7 +16,7 @@ GDK_BACKEND=wayland rofi \
     -dmenu \
     -i \
     -p "J.A.R.V.I.S." \
-    -mesg "WehttamSnaps · Arch Linux · SwayFX · Noctalia Shell" \
+    -mesg "WehttamSnaps · Arch Linux · Niri · Noctalia Shell" \
     -no-custom \
     -no-fixed-num-lines \
     -theme "$THEME" \
